@@ -27,6 +27,8 @@ public class Main {
     public static void main(String[] args) {
         Emp emp = new Emp(":)");
 
+        //test
+
         Kiosk ks = new Kiosk();
         ks.kioskStart();
     }
