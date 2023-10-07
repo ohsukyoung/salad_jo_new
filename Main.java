@@ -28,6 +28,7 @@ public class Main {
         Emp emp = new Emp(":)");
 
         //test
+        //test test
 
         Kiosk ks = new Kiosk();
         ks.kioskStart();
