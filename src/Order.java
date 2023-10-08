@@ -17,8 +17,6 @@ class UserProduct {
         this.u_price = u_price;
     }
 
-    ;
-
     public UserProduct() {
 
     }
@@ -147,6 +145,7 @@ class OrderSetting {
     Iterator<UserProduct> innerList;
 
     void set_order(List<Order> outerList) {
+        //TODO 캐시
         outerList.add(new Order("이름1", "20231005153350", 200, 200));
         outerList.add(new Order("이름2", "20231005153350", 200, 200));
         outerList.add(new Order("이름3", "20231005153350", 200, 200));
@@ -154,13 +153,12 @@ class OrderSetting {
         outerList.add(new Order("이름5", "20231005153350", 200, 200));
     }
 
+    //TODO 테스트 지우기 -> cacheData 안의 메소드로 옮기기...
     void set_InnerOrder(List<Order> outerList) {
         for (int i = 0; i < 3; i++) {
             outerList.get(i).innerList.add(new UserProduct("베이스", 1, 100, 200));
         }
         System.out.println(outerList.get(1).innerList.get(0).getU_calorie());
-
-//        orderList.add(new Order("이름1","20231005153350",new UserProduct("베이스",1,100,200),200,200));
     }
 
     void set_Operation(List<Order> outerList, int useridx) {
@@ -169,6 +167,7 @@ class OrderSetting {
 
         outList = outerList.iterator();
 
+        //TODO for-each문으로: outerList for-each문으로 > innerList for-each 문으로
         for (int i = 0; i < outerList.size(); i++) {
             Order itS = outList.next();
             innerList = outerList.get(i).innerList.iterator();
