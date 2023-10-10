@@ -5,7 +5,8 @@ import java.util.List;
 제품 셋팅 ----------------------------------------------------------------
 */
 interface PdInterface {
-    List<Product> productList = new ArrayList<>();
+//    List<Product> productList = new ArrayList<>();
+    List<Product> productList = CacheData.list1;
 
     List<Product> getList(ProductType productType);
 }

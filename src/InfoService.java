@@ -6,47 +6,58 @@ import java.util.List;
  안내 ----------------------------------------------------------------
 */
 interface Imp_info {
-    UserProduct printInfo(ProductType productType);
+    void printInfo(ProductType productType);
 }
 
 class InfoService implements Imp_info {
     private BufferedReader br;
-    private ProductService productService;
+    private PdInterface pdInterface;
 
-    public UserProduct printInfo(ProductType productType) {
-        List<Product> productList = productService.getList(productType);
+    // 생성자를 사용하여 productService 초기화
+    public InfoService(ProductService productService) {
+        this.pdInterface = productService;
+    }
+
+    public void printInfo(ProductType productType) {
+        List<Product> productList = pdInterface.getList(productType);
 
         printInfoHeader(productType);
         printInfoBody(productType, productList);
 
-        // 유저 메뉴 숫자 선택
-        SelectMenu sMenu = new SelectMenu();
-        SelectCount sCount = new SelectCount();
+        // 작성중
+        OrderValues orderValues;
+        System.out.println("---------");
+        SelectContinue selectContinue = new SelectContinue();
+        selectContinue.menuSelect(productList);
+        //---
 
-        int userSelect = sMenu.menuSelect(productList.size());
-        int pdStock = productList.get(userSelect - 1).getP_stock(); // 선택한 재고 개수
-        int userStock = sCount.menuSelect(pdStock); // 유저 재고 개수 선택
-
-        // 유저 선택값 만들기
-        return new UserProduct(
-                productList.get(userSelect - 1).getP_name(),    // 유저 선택 제품>이름
-                userStock,                              // 유저 선택 개수
-                productList.get(userSelect - 1).getP_calorie(),  // 유저 선택 제품>칼로리
-                productList.get(userSelect - 1).getP_price()   // 유저 선택 제품>가격
-        );
+        System.out.println("---------");
     }
 
     public void printInfoHeader(ProductType productType) {
-        //TODO Dept 별로 구분
-        System.out.printf("%-4s| %-8s|\t%-8s|\t%-8s|\t%-8s\t|\t%-8s\n", "번호", "상품명", "단위", "칼로리", "가격", "남은수량");
+
+        if(productType != ProductType.RCMND)    // 사장추천이 아닐 경우
+            System.out.printf("%-4s| %-8s|\t%-8s|\t%-8s|\t%-8s\t|\t%-8s\n", "번호", "상품명", "단위", "칼로리", "가격", "남은수량");
+        else
+            System.out.printf("%-4s| %-8s|\t%-8s|\t%-8s\t|\t%-8s\n", "번호", "상품명", "상세재료", "칼로리", "가격");
     }
 
     public void printInfoBody(ProductType productType, List<Product> productInfo) {
-        Iterator<Product> citList = productInfo.iterator();
-        for (int i = 1; i <= productInfo.size(); i++) {
-            Product itS = citList.next();
-            //TODO Dept 별로 구분
-            System.out.printf("%-4d   %-8s \t%-8s \t%-8s\t \t%-8d \t%-8d\n", i, itS.getP_name(), itS.getP_unit(), itS.getP_calorie(), itS.getP_price(), itS.getP_stock());
+        if(productType != ProductType.RCMND){   // 사장추천이 아닐 경우
+            int i=1;
+            for(Product product : productInfo){
+                if(product.getP_stock()!=0)
+                    System.out.printf("%-4d   %-8s \t%-8s \t%-8s\t \t%-8d \t%-8d\n", i++, product.getP_name(), product.getP_unit(), product.getP_calorie(), product.getP_price(), product.getP_stock());
+                else i++;
+            }
+        }
+        else{
+            Iterator<Product> citList = productInfo.iterator();
+            for (int i = 1; i <= productInfo.size(); i++) {
+                Product itS = citList.next();
+                //TODO 사장추천 리스트 연결
+//                System.out.printf("%-4d   %-8s \t%-8s\t \t%-8d \t%-8d\n", i, itS.getC_name(), itS.getC_detail(), itS.getC_calorie(), itS.getC_price());
+            }
         }
     }
 }
