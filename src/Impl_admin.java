@@ -1,10 +1,3 @@
-//public interface Impl_admin {
-//    public void ad_print();
-//    public void ad_add();
-//    public void ad_modify();
-//    public void ad_delete();
-//}
-
 import java.io.IOException;
 
 public interface Impl_admin

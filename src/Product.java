@@ -12,7 +12,10 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectInputStream;
 import java.util.Iterator;
 
-enum ProductType {
+enum ProductType {              // 제품 열거혐(Enum)
+    /*
+        Enum 사용이유: 가독성 및 유지보수, 안전성(enum 타입의 값만 허용), 코드 중복 방지, 특정 값 집합 표현
+     */
     RCMND(1, 1, "사장추천"),
     MY_SALAD(2, 1, "나만의 샐러드"),
     DRINK(3, 1, "음료"),
@@ -48,18 +51,9 @@ enum ProductType {
     public String getName() {
         return name;
     }
-
-    public static ProductType productType(String fruits) {
-        for (ProductType productType : ProductType.values()) {
-            if (productType.equals(fruits)) {
-                return productType;
-            }
-        }
-        throw new RuntimeException();
-    }
 }
 
-class ProductTypeChange {
+class ProductTypeChange {   // userSelect를 ProductType으로 변환
     public ProductType ProductTypeChange(int userSelect) {
         return switch (userSelect) {
             case 1 -> ProductType.RCMND;

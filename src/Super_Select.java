@@ -11,11 +11,12 @@ interface Super_Select_Interface {
     int menuSelect(int listSize);
 }
 
+// 선택
 public abstract class Super_Select implements Super_Select_Interface {
     static BufferedReader br;
-    protected String message;
-    protected String errorMsg;
-    int minNum;
+    protected String message;   // 입력안내 메세지
+    protected String errorMsg;  // 에러 메세지
+    int minNum;                 // 선택 최소값
 
     public int menuSelect(int listSize) {
         int userSelect = 0;
@@ -37,7 +38,7 @@ public abstract class Super_Select implements Super_Select_Interface {
     }
 }
 
-// 작업중~~~
+// 메뉴추가안내 후 메뉴, 갯수 입력받기
 class SelectContinue extends Super_Select {
     public void menuSelectProduct(List<Product> productList){
         this.message    = "\t>> 메뉴를 추가 하시겠습니까?(Y/N): ";
@@ -108,8 +109,9 @@ class SelectContinue extends Super_Select {
     }
 }
 
+// 선택 값 삽입
 class InsertSelectValue{
-    public OrderValues insertSelectValueProduct(List<Product> productList){
+    public OrderValues insertSelectValueProduct(List<Product> productList){     //Procudt 타입의 메뉴 선택 선택값 삽입
         // 유저 메뉴 숫자 선택
         SelectMenu selectMenu = new SelectMenu();
         SelectCount selectCount = new SelectCount();
@@ -136,7 +138,7 @@ class InsertSelectValue{
         );
     }
 
-    public OrderValues insertSelectValueMaster(List<MasterRc> productList){
+    public OrderValues insertSelectValueMaster(List<MasterRc> productList){     //MasterRc 타입의 메뉴 선택 선택값 삽입
         // 유저 메뉴 숫자 선택
         SelectMenu selectMenu = new SelectMenu();
         SelectCount selectCount = new SelectCount();
@@ -153,9 +155,7 @@ class InsertSelectValue{
         }
 
         int userStock = selectCount.menuSelect(pdCount); // 유저 재고 개수 선택
-
-//        System.out.println(orderInnerValues);            // test 선택된 메뉴 출력
-
+        
         // 유저 선택값 만들기
         return new OrderValues(
                 productList.get(userSelect - 1).getR_name(),    // 유저 선택 제품>이름

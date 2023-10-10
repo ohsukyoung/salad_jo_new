@@ -7,26 +7,15 @@ import java.util.ArrayList;
  키오스크 ----------------------------------------------------------------
 */
 class Kiosk {
-    final String USER_NAME = "고객";
-    Imp_info info;
+    final String USER_NAME = "고객";      //-- 사용자 임의의 이름
+    public Imp_info info;                      //-- info 틀 생성
 
     public Kiosk(ProductService productService) {
         this.info = new InfoService(productService);
     }
-
-    ProductService productService = new ProductService(); // ProductService 객체 생성
-    List<Order> outerList = CacheData.orderOuterList;
-    List<Product> list1 = CacheData.list1;
-    List<OrderValues> orderInnerValues = CacheData.orderInnerValues;
-    HashMap<String,Member> hm = new HashMap<String,Member>();
-    Member m = new Member();
-
-    //장바구니 인스턴스
-    cart ca = new cart();
     public void kioskStart() throws IOException {
-
         storePack();    // 포장 or 매장 여부
-        menuDisp();
+        menuDisp();     // 사용자 메뉴 선택
 
         // 선택값 체크
         SelectMenu selectMenu = new SelectMenu();
@@ -39,7 +28,7 @@ class Kiosk {
         orderSetting.calculateOrderTotal();
         orderSetting.printOrderList();
 
-        List<Order> OrderList = new ArrayList<>();
+        cart ca = new cart();               //-- 장바구니 인스턴스 생성
         do
         {
             ca.menuDis();
@@ -59,7 +48,8 @@ class Kiosk {
         selectMenu.menuSelect(listSize);
 
         // 선택값 배열-유저 임시 이름 넣기
-        List<Order> orderOuterList = CacheData.orderOuterList;
+        List<Order> outerList = CacheData.orderOuterList;           //-- 사용자 선택 바깥(틀) 생성
+        List<Order> orderOuterList = CacheData.orderOuterList;      //-- 사용자 선택 안쪽(값) 생성
 
         if (orderOuterList.isEmpty()) {
             orderOuterList.add(new Order(USER_NAME + 1, "yyyyMMddHHmmss", 0, 0));
@@ -102,7 +92,6 @@ class Kiosk {
                 menuCancel();
                 break;
         }
-
     }
 
     public void menuRcmd() {

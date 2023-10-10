@@ -5,12 +5,12 @@ import java.util.List;
 제품 셋팅 ----------------------------------------------------------------
 */
 interface PdInterface {
-//    List<Product> productList = new ArrayList<>();
     List<Product> productList = CacheData.list1;
 
     List<Product> getList(ProductType productType);
 }
 
+// 입력받은 ProductType을 기준으로 리스트 생성
 class ProductService implements PdInterface {
     @Override
     public List<Product> getList(ProductType productType) {

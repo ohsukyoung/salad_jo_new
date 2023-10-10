@@ -10,7 +10,6 @@ interface Imp_info {
 }
 
 class InfoService implements Imp_info {
-    private BufferedReader br;
     private PdInterface pdInterface;
 
     // 생성자를 사용하여 productService 초기화
@@ -18,27 +17,31 @@ class InfoService implements Imp_info {
         this.pdInterface = productService;
     }
 
+    // ProductType을 기준으로 리스트 출력 & 선택 값 저장
     public void printInfo(ProductType productType) {
         if (productType != ProductType.RCMND){    // 사장추천이 아닐 경우
             List<Product> productList = pdInterface.getList(productType);
 
+            // 리스트 출력
             printInfoHeader(productType);
             printInfoBodyProduct(productType, productList);
 
-            // 선택한 값 저장
+            // 선택 값 저장
             SelectContinue selectContinue = new SelectContinue();
             selectContinue.menuSelectProduct(productList);
         }else {
+            // 리스트 출력
             List<MasterRc> masterList = CacheData.list2;
             printInfoHeader(productType);
             printInfoBodyMaster(productType, masterList);
 
-            // 선택한 값 저장
+            // 선택 값 저장
             SelectContinue selectContinue = new SelectContinue();
             selectContinue.menuSelectMasterRc(masterList);
         }
     }
 
+    // 출력 리스트 header
     public void printInfoHeader(ProductType productType) {
 
         if(productType != ProductType.RCMND)    // 사장추천이 아닐 경우
@@ -47,6 +50,7 @@ class InfoService implements Imp_info {
             System.out.printf("%-4s| %-8s|\t%-8s|\t%-8s\t|\t%-8s|\t%-8s\n", "번호", "상품명", "칼로리", "가격", "남은수량", "상세재료");
     }
 
+    // 출력 리스트 body>Mast
     public void printInfoBodyMaster(ProductType productType, List<MasterRc> productInfo) {
         int index=1;
         for(MasterRc masterRc : productInfo){
@@ -60,6 +64,7 @@ class InfoService implements Imp_info {
         }
     }
 
+    // 출력 리스트 body>Product
     public void printInfoBodyProduct(ProductType productType, List<Product> productInfo) {
         if(productType != ProductType.RCMND){   // 사장추천이 아닐 경우
             int index=1;
@@ -69,5 +74,5 @@ class InfoService implements Imp_info {
                 else index++;
             }
         }
-    }
+    } // end: printInfoBodyProduct
 }

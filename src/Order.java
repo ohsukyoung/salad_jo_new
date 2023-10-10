@@ -40,12 +40,11 @@ class OrderValues {
     }
 }
 
-public class Order {
-    //(outerList)
-    // 이름
-    // 년월일/시간
-    // 사용자선택 값(innerList)
-    // 총 칼로리, 총 결재금액
+public class Order implements Serializable{
+
+    @Serial
+    private static final long serialVersionUID = 4125292916481512201L;
+
     private String o_name;
     private String o_nowTime;
 
@@ -74,9 +73,7 @@ public class Order {
         this.o_totPrice = o_totPrice;
     }
 
-    public Order() {
-
-    }
+    public Order() { }
 
     public String getO_name() {
         return o_name;
@@ -120,7 +117,7 @@ public class Order {
 }
 
 class OrderCart {
-    public String nowTime() {
+    public String nowTime() {   // 현재시간
         Date today = new Date();
         Locale currentLocale = new Locale("KOREAN", "KOREA");
         String pattern = "yyyyMMddHHmmss"; //hhmmss로 시간,분,초만 뽑기도 가능
@@ -132,7 +129,7 @@ class OrderCart {
 
 // 주문
 class OrderSetting {
-    void calculateOrderTotal() {
+    void calculateOrderTotal() {            // 선택 값에 따라 총 칼로리, 총 가격 계산
         List<Order> OrderList = CacheData.orderOuterList;
         List<OrderValues> orderValueList = CacheData.orderInnerValues;
 
@@ -147,7 +144,7 @@ class OrderSetting {
         }
     }
 
-    void printOrderList() {
+    void printOrderList() {             // 선택 값 출력
         List<Order> OrderList = CacheData.orderOuterList;
         List<OrderValues> orderInnerValues = CacheData.orderInnerValues;
 
