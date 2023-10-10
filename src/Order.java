@@ -3,6 +3,8 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import java.util.Date;
+
 /*
  주문 ----------------------------------------------------------------
 */
@@ -19,56 +21,26 @@ class OrderValues {
         this.u_price = u_price;
     }
 
-    public OrderValues() {
-
-    }
-
-    public String getName() {
-        return u_name;
-    }
-
-    public void setU_name(String u_name) {
-        this.u_name = u_name;
-    }
-
-    public int getCount() {
-        return u_Count;
-    }
-
-    public void setU_Count(int u_Count) {
-        this.u_Count = u_Count;
-    }
-
-    public int getCalorie() {
-        return u_calorie;
-    }
-
-    public void setU_calorie(int u_calorie) {
-        this.u_calorie = u_calorie;
-    }
-
-    public int getPrice() {
-        return u_price;
-    }
-
-    public void setU_price(int u_price) {
-        this.u_price = u_price;
-    }
+    public OrderValues() {}
+    public String getName() { return u_name; }
+    public void setU_name(String u_name) { this.u_name = u_name; }
+    public int getCount() { return u_Count; }
+    public void setU_Count(int u_Count) { this.u_Count = u_Count; }
+    public int getCalorie() { return u_calorie; }
+    public void setU_calorie(int u_calorie) { this.u_calorie = u_calorie; }
+    public int getPrice() { return u_price; }
+    public void setU_price(int u_price) { this.u_price = u_price; }
 
     @Override
     public String toString() {
-        return "OrderValues{" +
-                "u_name='" + u_name + '\'' +
-                ", u_Count=" + u_Count +
-                ", u_calorie=" + u_calorie +
-                ", u_price=" + u_price +
-                '}';
+        return "선택내용" + "{" + "상품명:" + u_name +
+                ", 선택개수: " + u_Count +
+                ", 칼로리: " + u_calorie * u_Count +
+                ", 가격: " + u_price * u_Count + "}";
     }
 }
 
-public class Order implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 4125292916481512201L;
+public class Order {
     //(outerList)
     // 이름
     // 년월일/시간
@@ -186,7 +158,7 @@ class OrderSetting {
             System.out.printf("\t%-4s) %-4s \t%-4s \t%-8s \t%-8s\n", "NO", "제품", "구매수량", "칼로리", "금액");
 
             for (OrderValues orderValues: orderInnerValues) {
-                System.out.printf("\t%d-%d) %-8s \t%-8s \t%-8d \t%-8d\n", i , j++, orderValues.getName(), orderValues.getCount(), orderValues.getCalorie() * orderValues.getCount(), orderValues.getPrice() * orderValues.getCount());
+                System.out.printf("\t%d-%d) %-8s \t%-8s \t%-8d \t%-8d\n", i-1 , j++, orderValues.getName(), orderValues.getCount(), orderValues.getCalorie() * orderValues.getCount(), orderValues.getPrice() * orderValues.getCount());
             }
 
         }

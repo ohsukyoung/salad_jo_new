@@ -1,16 +1,18 @@
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 
 /*
  메인 ----------------------------------------------------------------
 */
-
-
-class CacheData{
+class CacheData {
 
     static List<Order> orderOuterList = new ArrayList<>();      // 사용자 선택 바깥 리스트
-    static List<OrderValues> orderInnerValues;// = orderOuterList.get(orderOuterList.size()).innerList;
+    static List<OrderValues> orderInnerValues;                  // 사용자 선택 안쪽(실제 값) 리스트
 
     static List<Product> list1 = new ArrayList<>(); // TODO 리스트 이름 공통화(ex.allProductList)
     static List<MasterRc> list2 = new ArrayList<>();
@@ -52,16 +54,9 @@ class CacheData{
         list1.add(new Product(29,ProductType.SIDE,4,"프로틴바","70g",50,414,5,400));
 
         //  settingMasterRCProductList
-
         List<Product> r_products1 = new ArrayList<>();
         List<Product> r_products2 = new ArrayList<>();
         List<Product> r_products3 = new ArrayList<>();
-
-//        void set_Ceo() {
-//            ceoList.add(new CeoRcmd("시저치킨샐러드", new CeoDetail("닭고기", "크렌베리", "시저"), 200, 20));
-//            ceoList.add(new CeoRcmd("콥샐러드", new CeoDetail("계란", "옥수수", "시저"), 300, 30));
-//            ceoList.add(new CeoRcmd("연어샐러드", new CeoDetail("연어", "토마토", "크리미"), 400, 40));
-//        }
 
         Product product1 = new Product(4,ProductType.S_MAIN,2,"닭고기","50g",50,60,5,400);
         Product product2 = new Product(11,ProductType.S_SIDE,7,"크렌베리","10g",50,31,5,400);
@@ -86,9 +81,6 @@ class CacheData{
         r_products3.add(product22);
         r_products3.add(product23);
         list2.add(new MasterRc(3, ProductType.RCMND, "연어샐러드", 4000, 5000, r_products3,10,50));
-
-
-
 
     }
 
@@ -118,38 +110,27 @@ class CacheData{
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
+        FileMg f = new FileMg();
+        // 객체 파일 불러들이기
+        MemberMg.hm = f.memberFileIn();
+        SalesMg.receipts = f.receiptFileIn();
 
+        // 관리자 로그인 폼
+        ad_login al = new ad_login();
+        al.adLogin();
 
+        // 객체 파일 내보내기
+        f.memberFileOut();
+        f.receiptFileOut();
 
+        System.out.println("\n\n\t====[[[[[ 사용자 화면 ]]]]]====");
+
+        // 환영인사
         Emp emp = new Emp(":)");
+        emp.empWelcome();
 
+        // 사용자 폼
         ProductService productService = new ProductService(); // ProductService 객체 생성
-
-
-
-//        관리자 값 받아오고 넘겨주기를 위한 테스트 코드 -----------------------
-
-        Product product = new Product();
-        FoodAdmin foodadmin = new FoodAdmin();
-        MasterRc masterRc = new MasterRc();
-
-//    adminmenu.printproduct();
-//        product.ad_add();
-//        product.ad_print();
-//		product.ad_modify();
-//		product.ad_delete();
-
-//        foodadmin.product_setting();
-//        foodadmin.soldout_management();
-
-
-//        FoodAdmin foodadmin = new FoodAdmin();
-//        foodadmin.product_setting();
-//        foodadmin.soldout_management();
-
-        masterRc.ad_add();
-        masterRc.ad_print();
-
         Kiosk ks = new Kiosk(productService);
         ks.kioskStart();
 

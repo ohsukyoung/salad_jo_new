@@ -8,6 +8,7 @@ import java.util.List;
 interface Imp_info {
     void printInfo(ProductType productType);
 }
+
 class InfoService implements Imp_info {
     private BufferedReader br;
     private PdInterface pdInterface;
@@ -24,8 +25,7 @@ class InfoService implements Imp_info {
             printInfoHeader(productType);
             printInfoBodyProduct(productType, productList);
 
-            // 선택한 값 저장하기
-//            OrderValues orderValues;
+            // 선택한 값 저장
             SelectContinue selectContinue = new SelectContinue();
             selectContinue.menuSelectProduct(productList);
         }else {
@@ -33,6 +33,7 @@ class InfoService implements Imp_info {
             printInfoHeader(productType);
             printInfoBodyMaster(productType, masterList);
 
+            // 선택한 값 저장
             SelectContinue selectContinue = new SelectContinue();
             selectContinue.menuSelectMasterRc(masterList);
         }
@@ -45,17 +46,18 @@ class InfoService implements Imp_info {
         else
             System.out.printf("%-4s| %-8s|\t%-8s|\t%-8s\t|\t%-8s|\t%-8s\n", "번호", "상품명", "칼로리", "가격", "남은수량", "상세재료");
     }
+
     public void printInfoBodyMaster(ProductType productType, List<MasterRc> productInfo) {
-            int index=1;
-            for(MasterRc masterRc : productInfo){// TODO 총 칼로리로 수정
-                System.out.printf("%-4d   %-8s \t%-8d \t%-8d \t%-8d", index++, masterRc.getR_name(), masterRc.getR_totalcalorie(), masterRc.getR_price(), masterRc.getR_count());
-                System.out.printf("\t");
-                for (Product product : masterRc.getR_products())
-                {
-                    System.out.print(" " + product.getP_name());
-                }
-            System.out.println();
+        int index=1;
+        for(MasterRc masterRc : productInfo){
+            System.out.printf("%-4d   %-8s \t%-8d \t%-8d \t%-8d", index++, masterRc.getR_name(), masterRc.getR_totalcalorie(), masterRc.getR_price(), masterRc.getR_count());
+            System.out.printf("\t");
+            for (Product product : masterRc.getR_products())
+            {
+                System.out.print(" " + product.getP_name());
             }
+            System.out.println();
+        }
     }
 
     public void printInfoBodyProduct(ProductType productType, List<Product> productInfo) {

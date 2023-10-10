@@ -9,6 +9,6 @@ public class Emp {
     }
 
     public void empWelcome() {
-        System.out.println(staff + "안녕하세요. [샐러드조]입니다.\n 방문해주셔서 감사합니다.");
+        System.out.println("\t" + staff + " 안녕하세요. [샐러드조]입니다.\n\t방문해주셔서 감사합니다.");
     }
 }
