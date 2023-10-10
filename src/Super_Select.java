@@ -39,7 +39,7 @@ public abstract class Super_Select implements Super_Select_Interface {
 
 // 작업중~~~
 class SelectContinue extends Super_Select {
-    public void menuSelect(List<Product> productList){
+    public void menuSelectProduct(List<Product> productList){
         this.message = ">> 메뉴를 추가 하시겠습니까?(Y/N): ";
         this.errorMsg = "잘못입력했습니다. 다시 입력해주세요.";
 
@@ -59,7 +59,38 @@ class SelectContinue extends Super_Select {
                 if(answer == 'N' || answer == 'n') // N이거나 n이면 -> 반복문 빠져나가기
                     break;
 
-                orderValues = insertSelectValue.insertSelectValue(productList);
+                orderValues = insertSelectValue.insertSelectValueProduct(productList);
+                orderInnerValues.add(orderValues);
+            }
+        } catch (IOException e) {
+            System.out.println("e.toString: " + e.toString());
+            System.out.println("e.getMessage: " + e.getMessage());
+            System.out.println("printStackTrace................");
+            e.printStackTrace();
+        }
+    }
+
+    public void menuSelectMasterRc(List<MasterRc> productList){
+        this.message = ">> 메뉴를 추가 하시겠습니까?(Y/N): ";
+        this.errorMsg = "잘못입력했습니다. 다시 입력해주세요.";
+
+        br = new BufferedReader(new InputStreamReader(System.in));
+        InsertSelectValue insertSelectValue = new InsertSelectValue();
+        List<OrderValues> orderInnerValues = CacheData.orderInnerValues;
+        OrderValues orderValues = null;
+        char answer;
+
+        try {
+            while (true){
+
+                do {
+                    System.out.printf(message);
+                    answer = br.readLine().charAt(0);
+                }while (answer != 'Y' && answer != 'y' && answer != 'N' && answer != 'n');
+                if(answer == 'N' || answer == 'n') // N이거나 n이면 -> 반복문 빠져나가기
+                    break;
+
+                orderValues = insertSelectValue.insertSelectValueMaster(productList);
                 orderInnerValues.add(orderValues);
             }
         } catch (IOException e) {
@@ -72,24 +103,24 @@ class SelectContinue extends Super_Select {
 }
 
 class InsertSelectValue{
-    public OrderValues insertSelectValue(List<Product> productList){
+    public OrderValues insertSelectValueProduct(List<Product> productList){
         // 유저 메뉴 숫자 선택
         SelectMenu selectMenu = new SelectMenu();
         SelectCount selectCount = new SelectCount();
 
         int userSelect = selectMenu.menuSelect(productList.size());
-        int totalPdStock = productList.get(userSelect - 1).getP_stock(); // 선택한 재고 개수
-        int pdStock = totalPdStock;
+        int totalPdCount = productList.get(userSelect - 1).getP_count(); // 선택한 재고 개수
+        int pdCount = totalPdCount;
 
         List<OrderValues> orderInnerValues = CacheData.orderInnerValues;
         System.out.println(orderInnerValues);
         for (OrderValues orderValues: orderInnerValues){
             if(orderValues.getName().equals(productList.get(userSelect - 1).getP_name())){
-                pdStock -= orderValues.getCount();
+                pdCount -= orderValues.getCount();
             }
         }
 
-        int userStock = selectCount.menuSelect(pdStock); // 유저 재고 개수 선택
+        int userStock = selectCount.menuSelect(pdCount); // 유저 재고 개수 선택
 
         // 유저 선택값 만들기
         return new OrderValues(
@@ -97,6 +128,34 @@ class InsertSelectValue{
                 userStock,                              // 유저 선택 개수
                 productList.get(userSelect - 1).getP_calorie(),  // 유저 선택 제품>칼로리
                 productList.get(userSelect - 1).getP_price()   // 유저 선택 제품>가격
+        );
+    }
+
+    public OrderValues insertSelectValueMaster(List<MasterRc> productList){
+        // 유저 메뉴 숫자 선택
+        SelectMenu selectMenu = new SelectMenu();
+        SelectCount selectCount = new SelectCount();
+
+        int userSelect = selectMenu.menuSelect(productList.size());
+        int totalPdCount = productList.get(userSelect - 1).getR_count(); // 선택한 재고 개수
+        int pdCount = totalPdCount;
+
+        List<OrderValues> orderInnerValues = CacheData.orderInnerValues;
+        System.out.println(orderInnerValues);
+        for (OrderValues orderValues: orderInnerValues){
+            if(orderValues.getName().equals(productList.get(userSelect - 1).getR_name())){
+                pdCount -= orderValues.getCount();
+            }
+        }
+
+        int userStock = selectCount.menuSelect(pdCount); // 유저 재고 개수 선택
+
+        // 유저 선택값 만들기
+        return new OrderValues(
+                productList.get(userSelect - 1).getR_name(),    // 유저 선택 제품>이름
+                userStock,                              // 유저 선택 개수
+                productList.get(userSelect - 1).getR_totalcalorie(),  // 유저 선택 제품>칼로리
+                productList.get(userSelect - 1).getR_price()   // 유저 선택 제품>가격
         );
     }
 }

@@ -86,6 +86,7 @@ class Kiosk {
 
     public void menuRcmd() {     // 사장추천
         System.out.println("\n1. 사장추천 -------------------------------------- ");
+        info.printInfo(ProductType.RCMND);
     }
 
     public void menuMySalad() {
@@ -107,6 +108,7 @@ class Kiosk {
 
     public void menuSide() {     // 사이드
         System.out.println("\n2. 사이드 -------------------------------------- ");
+        info.printInfo(ProductType.SIDE);
     }
 
     public void menuCancel() {   // 취소
