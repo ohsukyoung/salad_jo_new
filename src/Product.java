@@ -55,17 +55,26 @@ enum ProductType {              // 제품 열거혐(Enum)
 
 class ProductTypeChange {   // userSelect를 ProductType으로 변환
     public ProductType ProductTypeChange(int userSelect) {
-        return switch (userSelect) {
-            case 1 -> ProductType.RCMND;
-            case 2 -> ProductType.MY_SALAD;
-            case 3 -> ProductType.DRINK;
-            case 4 -> ProductType.SIDE;
-            case 5 -> ProductType.S_BASE;
-            case 6 -> ProductType.S_MAIN;
-            case 7 -> ProductType.S_SIDE;
-            case 8 -> ProductType.S_SOURCE;
-            default -> null;
-        };
+        switch (userSelect) {
+            case 1:
+                return ProductType.RCMND;
+            case 2:
+                return ProductType.MY_SALAD;
+            case 3:
+                return ProductType.DRINK;
+            case 4:
+                return ProductType.SIDE;
+            case 5:
+                return ProductType.S_BASE;
+            case 6:
+                return ProductType.S_MAIN;
+            case 7:
+                return ProductType.S_SIDE;
+            case 8:
+                return ProductType.S_SOURCE;
+            default:
+                return null;
+        }
     }
 }
 
@@ -219,14 +228,14 @@ public class Product implements Serializable, Impl_admin {
         //자료구조 생성
 //        List<Product> list1 = new ArrayList<Product>();
         List<Product> list1 = CacheData.list1;
-
+        boolean shouldExit = false;
         System.out.println("[[2.신규재료 등록]]========================================================================");
         System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
                 "구분번호", "분류번호", "이름", "단위", "개수", "칼로리", "적정재고", "금액");
         System.out.println("===========================================================================================");
 
         // 무한루프를 활용
-        while (true) {
+//        while (!shouldExit) {
             System.out.print("재료 정보를 입력하시오 (스페이스로 구분): ");
             String input = br.readLine();
 
@@ -234,7 +243,7 @@ public class Product implements Serializable, Impl_admin {
             StringTokenizer tokenizer = new StringTokenizer(input, " ");
             if (tokenizer.countTokens() != 8) {
                 System.out.println("입력한 항목의 갯수가 맞지 않습니다.");
-                continue;
+//                continue;
             }
 
             int p_checkNumber = Integer.parseInt(tokenizer.nextToken());
@@ -250,10 +259,7 @@ public class Product implements Serializable, Impl_admin {
             int p_stock = Integer.parseInt(tokenizer.nextToken());
             int p_price = Integer.parseInt(tokenizer.nextToken());
 
-            //prduct 인스턴스 생성하여 자료구조에 넣어주기
-//            Product product = new Product(p_checkNumber, p_material, p_name, p_unit, p_count, p_calorie, p_stock, p_price);
-            Product product = new Product(p_checkNumber, productType, p_material, p_name, p_unit, p_count, p_calorie, p_stock, p_price);
-            list1.add(product);
+
 
             //역직렬화 데이터 불러오기
 //            File f0 = new File(appDir, "\\data\\productData.ser");
@@ -293,27 +299,24 @@ public class Product implements Serializable, Impl_admin {
                 {
                     System.out.println("이미 구분번호가 존재합니다.");
                     return;
-                }
+                }else{
+                    System.out.print("저장하시겠습니까?(Y/N) : ");
+                    char x = br.readLine().charAt(0);
+                    if (x == 'Y' || x == 'y')
+                    {
+                        //prduct 인스턴스 생성하여 자료구조에 넣어주기
+    //            Product product = new Product(p_checkNumber, p_material, p_name, p_unit, p_count, p_calorie, p_stock, p_price);
+                        Product product = new Product(p_checkNumber, productType, p_material, p_name, p_unit, p_count, p_calorie, p_stock, p_price);
+                        list1.add(product);
+//                        break;
+                    }
+//                    else {
+//                        break;
+//                    }
 
-//            System.out.print("저장하시겠습니까?(Y/N) : ");
-//            char x = br.readLine().charAt(0);
-//            if (x == 'Y' || x == 'y')
-//            {
-//                // 새로운 제품을 기존 리스트에 추가합니다.
-//                existingList.addAll(list1);
-//
-//                // 업데이트된 리스트를 파일에 저장합니다.
-//                FileOutputStream fos = new FileOutputStream(f0);
-//                ObjectOutputStream oos = new ObjectOutputStream(fos);
-//                oos.writeObject(existingList);
-//                oos.close();
-//                fos.close();
-//
-//                break;
-//            }
-//            else
-            break;
-        }
+                }
+                KioskMg.productflag = false;
+//        }
 
 
     }
@@ -360,16 +363,16 @@ public class Product implements Serializable, Impl_admin {
                 while (true) {
                     System.out.print("변경할 내용의 숫자를 입력하시오 (0: 변경 완료) : ");
                     int a = Integer.parseInt(br.readLine());
-//                    if (a == 0)
-//                    {
-//                        // 변경 완료 시, 변경된 정보를 저장
+                    if (a == 0)
+                    {
+                        // 변경 완료 시, 변경된 정보를 저장
 //                        FileOutputStream fos = new FileOutputStream(f0);
 //                        ObjectOutputStream oos = new ObjectOutputStream(fos);
 //                        oos.writeObject(product);
 //                        oos.close();
 //                        fos.close();
-//                        break;
-//                    }
+                        break;
+                    }
                     switch (a) {
                         case 1:
                             System.out.print("새로운 구분번호 입력: ");
@@ -420,6 +423,8 @@ public class Product implements Serializable, Impl_admin {
         if (!found) {
             System.out.println("구분번호가 일치하지 않습니다.");
         }
+
+        KioskMg.productflag = false;
 
     }
 
@@ -477,9 +482,9 @@ public class Product implements Serializable, Impl_admin {
         }
 
         // 삭제 대상 재료가 설정된 경우에만 삭제 수행
-//        if (deleteIndex != -1)
-//        {
-//            product.remove(deleteIndex);
+        if (deleteIndex != -1)
+        {
+            product.remove(deleteIndex);
 //
 //            // 변경된 정보를 저장
 //            FileOutputStream fos = new FileOutputStream(f0);
@@ -487,7 +492,9 @@ public class Product implements Serializable, Impl_admin {
 //            oos.writeObject(product);
 //            oos.close();
 //            fos.close();
-//        }
+        }
+
+        KioskMg.productflag = false;
 
 
     }

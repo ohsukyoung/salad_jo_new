@@ -70,7 +70,7 @@ class InfoService implements Imp_info {
             int index=1;
             for(Product product : productInfo){
                 if(product.getP_count()>product.getP_stock())
-                    System.out.printf("%-4d   %-8s \t%-8s \t%-8s\t \t%-8d \t%-8d\n", index++, product.getP_name(), product.getP_unit(), product.getP_calorie(), product.getP_price(), product.getP_stock());
+                    System.out.printf("%-4d   %-8s \t%-8s \t%-8s\t \t%-8d \t%-8d\n", index++, product.getP_name(), product.getP_unit(), product.getP_calorie(), product.getP_price(), product.getP_count() - product.getP_stock());
                 else index++;
             }
         }

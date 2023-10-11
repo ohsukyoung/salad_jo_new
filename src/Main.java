@@ -14,6 +14,8 @@ class CacheData {
     static List<OrderValues> orderInnerValues;                  // 사용자 선택 안쪽(값) 리스트
     static List<Product> list1 = new ArrayList<>();             // 사장추천이외(나만의 샐러드, 음료, 사이드, 샐러드세부재료 등)의 리스트 // TODO 리스트 이름 공통화(ex.allProductList)
     static List<MasterRc> list2 = new ArrayList<>();            // 사장추천 리스트
+//    static ArrayList<Receipt> receipts = SalesMg.receipts;
+
     static{
         // 사용자 선택 리스트 값 입력을 위한 첫번째 객체 추가
         orderOuterList.add(new Order());
@@ -79,6 +81,19 @@ class CacheData {
         r_products3.add(product23);
         list2.add(new MasterRc(3, ProductType.RCMND, "연어샐러드", 4000, 5000, r_products3,10,50));
 
+
+//        orderOuterList.add(new Order("이름1", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름2", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름3", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름4", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름5", "20231005153350", 200, 200));
+//        for (int i = 0; i < 3; i++) {
+//            orderOuterList.get(i).innerList.add(new OrderValues("베이스", 1, 100, 200));
+//        }
+
+
+
+
     }
 
     public CacheData(){
@@ -87,11 +102,11 @@ class CacheData {
     }
 
     void settingOuterOrder() {  // testData
-        orderOuterList.add(new Order("이름1", "20231005153350", 200, 200));
-        orderOuterList.add(new Order("이름2", "20231005153350", 200, 200));
-        orderOuterList.add(new Order("이름3", "20231005153350", 200, 200));
-        orderOuterList.add(new Order("이름4", "20231005153350", 200, 200));
-        orderOuterList.add(new Order("이름5", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름1", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름2", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름3", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름4", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름5", "20231005153350", 200, 200));
     }
 
     void settingInnerOrder() {  // testData
@@ -107,31 +122,38 @@ class CacheData {
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
 
+//        MemberMg mm = new MemberMg();
+//        SalesMg sm = new SalesMg();
+//
+//        sm.menuDisp();
+//        sm.menuSelect();
+//        sm.menuRun();
+
         FileMg f = new FileMg();
         // 객체 파일 불러들이기
         MemberMg.hm = f.memberFileIn();
         SalesMg.receipts = f.receiptFileIn();
-        CacheData.orderOuterList = f.orderOuterFileIn();
+
 
         // 관리자 로그인 폼
         ad_login al = new ad_login();
         al.adLogin();
-
-        // 객체 파일 내보내기
+//
+//        // 객체 파일 내보내기
         f.memberFileOut();
         f.receiptFileOut();
-        f.orderOuterFileOut();
 
-        System.out.println("\n\n\t====[[[[[ 사용자 화면 ]]]]]====");
-
-        // 환영인사
-        Emp emp = new Emp(":)");
-        emp.empWelcome();
-
+//        System.out.println("\n\n\t====[[[[[ 사용자 화면 ]]]]]====");
+//
+//        // 환영인사
+//        Emp emp = new Emp(":)");
+//        emp.empWelcome();
+//
         // 사용자 폼
         ProductService productService = new ProductService(); // ProductService 객체 생성
         Kiosk ks = new Kiosk(productService);
         ks.kioskStart();
+
 
     }
 }

@@ -14,11 +14,26 @@ public class SalesMg
     static ArrayList<Receipt> receipts = new ArrayList<>();
     private static BufferedReader br;
     private static Integer sel;
+    static List<Order> orderOuterList = CacheData.orderOuterList;
 
     static
     {
         br = new BufferedReader(new InputStreamReader(System.in));
         sel = 1;
+
+//        receipts.add(new Receipt(2023, 10, 4, 18, "010123123", true, 1000, "일반카드", 100000, false));
+//        receipts.add(new Receipt(2022, 10, 2, 20, "회원이 아닙니다", false, 0, "카카오", 50000, false));
+//        receipts.add(new Receipt(2022, 10, 2, 18, "010245245", true, 400,  "일반카드", 20000, false));
+//        receipts.add(new Receipt(2022, 10, 2, 18, "회원이 아닙니다", false, 0, "카카오", 30000, false));
+//        receipts.add(new Receipt(2020, 10, 2, 18, "01023456", true, 300, "삼성페이", 10000, false));
+        //TEST data 주석처리(23.10.11)
+//        orderOuterList.remove(0);
+//        orderOuterList.add(new Order("이름1", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름2", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름3", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름4", "20231005153350", 200, 200));
+//        orderOuterList.add(new Order("이름5", "20231005153350", 200, 200));
+
     }
 
     public static void menuDisp()
@@ -30,6 +45,8 @@ public class SalesMg
         System.out.println("4. 종료");
         System.out.println("----------------------------------");
         System.out.print("메뉴를 선택하세요: ");
+
+        receiptSave();
     }
 
     public static void menuSelect() throws IOException, NumberFormatException
@@ -48,6 +65,50 @@ public class SalesMg
             default:
                 System.out.println("메뉴 선택 오류~!!!");
         }
+    }
+
+    public static void receiptSave(){  // TODO 해보기
+        System.out.println("~~~~~~~~~~~~~~~~~~");
+        List<Order> orderOuterList = CacheData.orderOuterList;
+        for (Order order: orderOuterList){
+            System.out.println(order);
+        }
+
+        for(Order orders: orderOuterList){
+            String nowTime = orders.getO_nowTime();
+            int year = Integer.parseInt(nowTime.substring(0,4));
+            int month = Integer.parseInt(nowTime.substring(4,6));
+            int day = Integer.parseInt(nowTime.substring(6,8));
+            int hour = Integer.parseInt(nowTime.substring(8,10));
+            String memberid = orders.getO_name();
+            boolean ismemeber = orders.isMember();
+            int usedpoints = orders.getUsedPoints();
+            String paymentmethod = orders.getPaymentMethod();
+            double totalamout = orders.getO_totPrice();
+            receipts.add(new Receipt(year, month, day, hour, memberid, ismemeber, usedpoints, paymentmethod, totalamout));
+        }
+
+        for (Receipt receipt: receipts){
+            System.out.println(receipt);
+        }
+
+
+//        String nowTime = orderOuterList.get(orderOuterList.size()-1).getO_nowTime();
+//        int year = Integer.parseInt(nowTime.substring(0,4));
+//        int month = Integer.parseInt(nowTime.substring(4,6));
+//        int day = Integer.parseInt(nowTime.substring(6,8));
+//        int hour = Integer.parseInt(nowTime.substring(8,10));
+//        String memberid = orderOuterList.get(orderOuterList.size()-1).getO_name();
+//        boolean ismemeber = orderOuterList.get(orderOuterList.size()-1).isMember();
+//        int usedpoints = orderOuterList.get(orderOuterList.size()-1).getUsedPoints();
+//        String paymentmethod = orderOuterList.get(orderOuterList.size()-1).getPaymentMethod();
+//        double totalamout = orderOuterList.get(orderOuterList.size()-1).getO_totPrice();
+
+
+        //System.out.println(year+" "+month + " " + day + " " + hour);
+//        orderOuterList.get(0).
+//        receipts.add(new Receipt(2023, 10, 4, 18, "01012341234", true, 1000, "일반카드", 100000, false));
+        System.out.println("~~~~~~~~~~~~~~~~~~");
     }
 
     public static void cancelPayment() throws IOException

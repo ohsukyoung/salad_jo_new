@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 interface Super_Select_Interface {
-    int menuSelect(int listSize);
+    int menuSelect(int listSize,int minNum);
 }
 
 // 선택
@@ -18,7 +18,7 @@ public abstract class Super_Select implements Super_Select_Interface {
     protected String errorMsg;  // 에러 메세지
     int minNum;                 // 선택 최소값
 
-    public int menuSelect(int listSize) {
+    public int menuSelect(int listSize,int minNum) {
         int userSelect = 0;
         br = new BufferedReader(new InputStreamReader(System.in));
         try {
@@ -116,7 +116,7 @@ class InsertSelectValue{
         SelectMenu selectMenu = new SelectMenu();
         SelectCount selectCount = new SelectCount();
 
-        int userSelect = selectMenu.menuSelect(productList.size());
+        int userSelect = selectMenu.menuSelect(productList.size(),1);
         int totalPdCount = productList.get(userSelect - 1).getP_count(); // 선택한 재고 개수
         int pdCount = totalPdCount;
 
@@ -127,7 +127,7 @@ class InsertSelectValue{
             }
         }
 
-        int userStock = selectCount.menuSelect(pdCount); // 유저 재고 개수 선택
+        int userStock = selectCount.menuSelect(pdCount,0); // 유저 재고 개수 선택
 
         // 유저 선택값 만들기
         return new OrderValues(
@@ -143,7 +143,7 @@ class InsertSelectValue{
         SelectMenu selectMenu = new SelectMenu();
         SelectCount selectCount = new SelectCount();
 
-        int userSelect = selectMenu.menuSelect(productList.size());
+        int userSelect = selectMenu.menuSelect(productList.size(),1);
         int totalPdCount = productList.get(userSelect - 1).getR_count(); // 선택한 재고 개수
         int pdCount = totalPdCount;
 
@@ -154,7 +154,7 @@ class InsertSelectValue{
             }
         }
 
-        int userStock = selectCount.menuSelect(pdCount); // 유저 재고 개수 선택
+        int userStock = selectCount.menuSelect(pdCount,0); // 유저 재고 개수 선택
         
         // 유저 선택값 만들기
         return new OrderValues(
@@ -171,12 +171,28 @@ class SelectMenu extends Super_Select {
     public SelectMenu() {
         this.message    = "\t>> 메뉴 선택: ";
         this.errorMsg   = "\t메뉴 리스트 번호에서 벗어났습니다. 다시 입력해주세요.";
-        this.minNum = 1;
+//        this.minNum = 1;
     }
 
     @Override
-    public int menuSelect(int listSize) {
-        return super.menuSelect(listSize);
+    public int menuSelect(int listSize,int minNum) {
+        super.minNum = minNum;
+        return super.menuSelect(listSize,minNum);
+    }
+}
+
+//TODO 중복 코드 줄이기(확인필요)
+class SelectMenuAdmin extends Super_Select {
+    public SelectMenuAdmin() {
+        this.message    = "\t>> 메뉴 선택: ";
+        this.errorMsg   = "\t메뉴 리스트 번호에서 벗어났습니다. 다시 입력해주세요.";
+//        this.minNum = 1;
+    }
+
+    @Override
+    public int menuSelect(int listSize,int minNum) {
+        super.minNum = minNum;
+        return super.menuSelect(listSize,minNum);
     }
 }
 
@@ -185,12 +201,13 @@ class SelectCount extends Super_Select {
     public SelectCount() {
         this.message    = "\t>> 수량 선택: ";
         this.errorMsg   = "\t남은 수량에서 벗어났습니다. 다시 입력해주세요.";
-        this.minNum = 0;
+//        this.minNum = 0;
     }
 
     @Override
-    public int menuSelect(int listSize) {
-        return super.menuSelect(listSize);
+    public int menuSelect(int listSize,int minNum) {
+        super.minNum = minNum;
+        return super.menuSelect(listSize,minNum);
     }
 
 }

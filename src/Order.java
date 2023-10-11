@@ -1,14 +1,17 @@
-import java.io.Serial;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.StringTokenizer;
 
 import java.util.Date;
 
 /*
  주문 ----------------------------------------------------------------
 */
-class OrderValues {
+class OrderValues implements Serializable{
+    private static final long serialVersionUID = -9194797724974080745L;
+    private int u_checkNumber;  // 인덱스넘버
     private String u_name;  // 제품
     private int u_Count;    // 수량
     private int u_calorie;  // 칼로리
@@ -21,7 +24,18 @@ class OrderValues {
         this.u_price = u_price;
     }
 
+    OrderValues(int u_checkNumber, String u_name, int u_Count, int u_calorie, int u_price) {
+        this.u_checkNumber = u_checkNumber;
+        this.u_name = u_name;
+        this.u_Count = u_Count;
+        this.u_calorie = u_calorie;
+        this.u_price = u_price;
+    }
+
     public OrderValues() {}
+
+    public int getU_checkNumber() { return u_checkNumber; }
+    public void setU_checkNumber(int u_checkNumber) { this.u_checkNumber = u_checkNumber; }
     public String getName() { return u_name; }
     public void setU_name(String u_name) { this.u_name = u_name; }
     public int getCount() { return u_Count; }
@@ -42,16 +56,22 @@ class OrderValues {
 
 public class Order implements Serializable{
 
-    @Serial
     private static final long serialVersionUID = 4125292916481512201L;
 
-    private String o_name;
-    private String o_nowTime;
+    private String o_name;  // 회원아이디
+    private String o_nowTime;   // TODO 결재 시간 업데이트
 
     List<OrderValues> innerList = new ArrayList<OrderValues>();
     //    UserProduct o_userPd;
     private int o_totCalorie;
     private int o_totPrice;
+
+    private boolean isMember;
+    private int usedPoints;			// 포인트 사용
+    private String paymentMethod;	// 결제 수단
+    private double totalAmount;		// 총 결제 금액
+    private boolean isCancelled;
+    
 
     Order(String o_name) {
         this.o_name = o_name;
@@ -114,6 +134,46 @@ public class Order implements Serializable{
     public void setO_totPrice(int o_totPrice) {
         this.o_totPrice = o_totPrice;
     }
+
+    public boolean isMember() {
+        return isMember;
+    }
+
+    public void setMember(boolean member) {
+        isMember = member;
+    }
+
+    public int getUsedPoints() {
+        return usedPoints;
+    }
+
+    public void setUsedPoints(int usedPoints) {
+        this.usedPoints = usedPoints;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public boolean isCancelled() {
+        return isCancelled;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        isCancelled = cancelled;
+    }
 }
 
 class OrderCart {
@@ -136,12 +196,67 @@ class OrderSetting {
         OrderCart oC = new OrderCart();
         OrderList.get(OrderList.size()-1).setO_nowTime(oC.nowTime());
 
+        if (OrderList.isEmpty()) {
+            OrderList.add(new Order());
+            OrderList.get(OrderList.size()-1).setO_nowTime(oC.nowTime());
+        }
+        else {
+            OrderList.get(OrderList.size()-1).setO_nowTime(oC.nowTime());
+        }
+
         for (Order order: OrderList){
           for (OrderValues orderValues: orderValueList){
               order.setO_totCalorie(order.getO_totCalorie()+(orderValues.getCalorie() * orderValues.getCount()));
               order.setO_totPrice(order.getO_totPrice()+(orderValues.getPrice() * orderValues.getCount()));
           }
         }
+    }
+
+    void calculateOrderDiscount() {            // 선택 값에 따라 재고에서 선택값 빼주기
+//        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+        List<Product> List1 = CacheData.list1;
+        List<Order> OrderList = CacheData.orderOuterList;
+        List<OrderValues> orderValueList = CacheData.orderInnerValues;
+        int productIdx = 0;
+        for (Order order: OrderList){
+            for (OrderValues orderValues: orderValueList){
+//                System.out.println(orderValues.getName());
+                for(Product list1 : List1){
+                    if(list1.getP_name().equals(orderValues.getName())){
+                        productIdx = List1.indexOf(list1);
+//                        System.out.println(List1.indexOf(list1));
+                        break;
+                    }
+                }
+                int productCount = List1.get(productIdx).getP_count();
+                int productDiscount = orderValues.getCount();
+                List1.get(productIdx).setP_count(productCount - productDiscount);
+//                System.out.println("productCount: " + productCount);
+//                System.out.println("productDiscount: " + productDiscount);
+//                System.out.println("List1.get(productIdx): " + List1.get(productIdx).getP_count());
+            }
+        }
+
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~ test
+        /*System.out.println("[[1.전체 재료정보 출력]]========================================================================");
+        System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
+                "구분번호", "분류번호", "이름", "단위", "개수", "칼로리", "적정재고", "금액");
+        System.out.println("===========================================================================================");
+
+        // Iterator 활용하여 출력
+        List<Product> product = CacheData.list1;
+        Iterator<Product> itList;
+        itList = product.iterator();
+        while (itList.hasNext())
+        {
+            Product itS = itList.next();
+            System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n", itS.getP_checkNumber(),
+                    itS.getP_material(), itS.getP_name(), itS.getP_unit(), itS.getP_count(), itS.getP_calorie(),
+                    itS.getP_stock(), itS.getP_price());
+        }
+        System.out.println();*/
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~ test
+
     }
 
     void printOrderList() {             // 선택 값 출력

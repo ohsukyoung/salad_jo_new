@@ -20,6 +20,19 @@ public class Receipt implements Serializable
 
 
     // 생성자
+    public Receipt(int year, int month, int day, int hour, String memberId, boolean isMember, int usedPoints, String paymentMethod, double totalAmount)
+    {
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.isMember = isMember;
+        this.usedPoints = usedPoints;
+        this.paymentMethod = paymentMethod;
+        this.totalAmount = totalAmount;
+        this.memberId = memberId;
+    }
+
     public Receipt(int year, int month, int day, int hour, String memberId, boolean isMember, int usedPoints, String paymentMethod, double totalAmount, boolean isCancelled)
     {
         this.year = year;
@@ -32,8 +45,6 @@ public class Receipt implements Serializable
         this.totalAmount = totalAmount;
         this.isCancelled = isCancelled;
         this.memberId = memberId;
-
-
     }
 
     // Getter 및 Setter 메소드 추가

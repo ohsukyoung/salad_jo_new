@@ -98,6 +98,9 @@ public class FoodAdmin implements Serializable
             return; // 일치하지 않으면 삭제 작업을 하지 않고 종료
         }
 
+        KioskMg.foodadminflag = false;
+
+
     }
 
     public void soldout_management() throws IOException, ClassNotFoundException
@@ -159,6 +162,8 @@ public class FoodAdmin implements Serializable
                     break;*/
             }
         }
+
+        KioskMg.foodadminflag = false;
 
         /*if (!found)
         {

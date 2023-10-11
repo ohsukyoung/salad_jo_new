@@ -99,7 +99,7 @@ class MasterRc implements Serializable ,Impl_admin
         int minCount=10000;
         for (Product product : products)
         {
-            System.out.println(product.getP_count());
+//            System.out.println(product.getP_count());
             if(minCount > product.getP_count())
                 minCount = product.getP_count();
         }
@@ -141,10 +141,14 @@ class MasterRc implements Serializable ,Impl_admin
             for (Product product : masterRc.getR_products())
             {
                 System.out.println(" 재료이름: " + product.getP_name() + " || 재료 갯수: " + product.getP_count());
+
             }
 
             System.out.println();
         }
+
+        KioskMg.masterrcflag = false;
+
     }
 
 
@@ -160,8 +164,8 @@ class MasterRc implements Serializable ,Impl_admin
                 "구분번호", "이름", "칼로리", "금액", "재료");
         System.out.println("===========================================================================================");
 
-        while (true)
-        {
+//        while (true)
+//        {
             // 재료를 선택하는 부분
             List<Product> selectedProducts = new ArrayList<>();
 
@@ -228,7 +232,7 @@ class MasterRc implements Serializable ,Impl_admin
             if (tokenizer.countTokens() != 3)
             {
                 System.out.println("입력한 항목의 갯수가 맞지 않습니다.");
-                continue;
+//                continue;
             }
 
             int r_checkNumber = Integer.parseInt(tokenizer.nextToken());
@@ -239,9 +243,7 @@ class MasterRc implements Serializable ,Impl_admin
             // 할인율 계산
             r_discount = 100-((r_price / totalPrice)*100);
 
-            // MasterRc 객체 생성 및 리스트에 추가
-            MasterRc masterRc = new MasterRc(r_checkNumber,ProductType.RCMND, r_name, r_totalcalorie, r_price, selectedProducts, r_discount, r_count);
-            list2.add(masterRc);
+
 
             //역직렬화 데이터 불러오기
 //            File f1 = new File(appDir, "\\data\\MasterData.ser");
@@ -282,14 +284,22 @@ class MasterRc implements Serializable ,Impl_admin
             {
                 System.out.println("이미 구분번호가 존재합니다.");
                 return;
+            }else {
+                System.out.print("저장하시겠습니까?(Y/N) : ");
+                char x = br.readLine().charAt(0);
+                if (x == 'Y' || x == 'y') {
+                    // MasterRc 객체 생성 및 리스트에 추가
+                    MasterRc masterRc = new MasterRc(r_checkNumber, ProductType.RCMND, r_name, r_totalcalorie, r_price, selectedProducts, r_discount, r_count);
+                    list2.add(masterRc);
+                }
             }
-
-            System.out.print("저장하시겠습니까?(Y/N) : ");
-            char x = br.readLine().charAt(0);
-            if (x == 'Y' || x == 'y')
-            {
+//
+//            System.out.print("저장하시겠습니까?(Y/N) : ");
+//            char x = br.readLine().charAt(0);
+//            if (x == 'Y' || x == 'y')
+//            {
                 // 새로운 제품을 기존 리스트에 추가합니다.
-                existingList2.addAll(list2);
+//                existingList2.addAll(list2);
 
                 // 업데이트된 리스트를 파일에 저장합니다.
 //                FileOutputStream fos1 = new FileOutputStream(f1);
@@ -298,24 +308,26 @@ class MasterRc implements Serializable ,Impl_admin
 //                oos1.close();
 //                fos1.close();
 
-                break;
-            }
-            else
-            {
-                return;
-            }
-        }
+//                return;
+//            }
+//            else
+//            {
+//                return;
+//            }
+//        }
+
+        KioskMg.masterrcflag = false;
     }
 
     @Override
     public void ad_modify() throws IOException, ClassNotFoundException
     {
-        File f1 = new File(appDir, "\\data\\MasterData.ser");
-        if (!f1.exists())
-        {
-            System.out.println("저장된 데이터가 없습니다.");
-            return;
-        }
+//        File f1 = new File(appDir, "\\data\\MasterData.ser");
+//        if (!f1.exists())
+//        {
+//            System.out.println("저장된 데이터가 없습니다.");
+//            return;
+//        }
 
         // 파일이 이미 존재하면 기존 데이터를 읽어옵니다.
 //        FileInputStream fis1 = new FileInputStream(f1);
@@ -358,16 +370,16 @@ class MasterRc implements Serializable ,Impl_admin
                 {
                     System.out.print("변경할 내용의 숫자를 입력하시오 (0: 변경 완료) : ");
                     int choice = Integer.parseInt(br.readLine());
-//                    if (choice == 0)
-//                    {
+                    if (choice == 0)
+                    {
 //                        // 변경 완료 시, 변경된 정보를 저장
 //                        FileOutputStream fos1 = new FileOutputStream(f1);
 //                        ObjectOutputStream oos1 = new ObjectOutputStream(fos1);
 //                        oos1.writeObject(existingList2);
 //                        oos1.close();
 //                        fos1.close();
-//                        break;
-//                    }
+                        break;
+                    }
                     switch (choice)
                     {
                         case 1:
@@ -395,18 +407,20 @@ class MasterRc implements Serializable ,Impl_admin
         {
             System.out.println("구분번호가 일치하지 않습니다.");
         }
+
+        KioskMg.masterrcflag = false;
     }
 
     @Override
     public void ad_delete() throws IOException, ClassNotFoundException
     {
         // 역직렬화 기존 데이터 불러오기
-        File f1 = new File(appDir, "\\data\\MasterData.ser");
-        if (!f1.exists())
-        {
-            System.out.println("저장된 데이터가 없습니다.");
-            return;
-        }
+//        File f1 = new File(appDir, "\\data\\MasterData.ser");
+//        if (!f1.exists())
+//        {
+//            System.out.println("저장된 데이터가 없습니다.");
+//            return;
+//        }
 //        FileInputStream fis1 = new FileInputStream(f1);
 //        ObjectInputStream ois1 = new ObjectInputStream(fis1);
 //        List<MasterRc> existingList2 = (List<MasterRc>) ois1.readObject();
@@ -470,6 +484,8 @@ class MasterRc implements Serializable ,Impl_admin
 //            oos1.close();
 //            fos1.close();
         }
+
+        KioskMg.masterrcflag = false;
     }
 
 }

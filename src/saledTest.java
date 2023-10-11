@@ -39,14 +39,6 @@ class cart
         br = new BufferedReader(new InputStreamReader(System.in));  //BufferedReader 객체 생성
         sel = 1;                                                    //사용자 입력값 초기화
     }
-
-    // 사용자가 장바구니를 종료하도록 선택한 경우 호출
-    public static void exitCart()
-    {
-        shouldExit = true;
-        System.exit(0);
-    }
-
     private static int tot;
     public static int getTot()
     {
@@ -86,7 +78,7 @@ class cart
     }
 
     //메뉴 선택 메소드
-    public static void menuSel() throws IOException
+    public static void menuSel(int userSelect) throws IOException
     {
         List<Order> OrderList = CacheData.orderOuterList;
         try
@@ -97,13 +89,13 @@ class cart
         {
             System.out.println("숫자를 넣어주세요.");
             menuDis();
-            menuSel();
-            menuR();
+            menuSel(userSelect);
+            menuR(userSelect);
         }
     }
 
     //선택된 메뉴 실행에 따른 기능 호출 메소드
-    public static void menuR() throws IOException
+    public static void menuR(int userSelect) throws IOException
     {
         List<Order> OrderList = CacheData.orderOuterList;
         //cartMe() 메소드 활용하여 처리
@@ -111,12 +103,8 @@ class cart
         {
             case cartMe.e_del : cartdel() ; break;
             case cartMe.e_pay : cartpay() ; break;
-            case cartMe.e_add : cartadd() ; break;
+            case cartMe.e_add : cartadd(userSelect) ; break;
             default : System.out.println("\n\t메뉴 선택 오류");
-        }
-        if (shouldExit) {
-            System.out.println("\n\t장바구니를 종료합니다.");
-            return;
         }
     }
 
@@ -124,13 +112,35 @@ class cart
     public static void cartdel() throws IOException
     {
         List<Order> OrderList = CacheData.orderOuterList;
+        List<OrderValues> orderInnerValues = CacheData.orderInnerValues;
         System.out.print("\n\t장바구니를 비우시겠습니까(Y/N)? : ");
         con = br.readLine().toUpperCase();
 
         if (con.equals("Y"))                                        //장바구니를 비우기로 했으면 자료구조 비우기
         {
-            OrderList.clear();  // 장바구니를 비우기 (모든 주문 정보 제거) //TODO 장바구니 비운 후 재고 마이너스 되지 않게 하기
-//            OrderList.add(new Order());
+            // TODO 파일 내보내기
+            try {
+                FileMg f = new FileMg();
+                f.orderOuterFileOut();
+                f.orderInnerValuesFileOut();
+                CacheData.orderOuterList = f.orderOuterFileIn();
+                CacheData.orderInnerValues = f.orderInnerValuesFileIn();
+            } catch (IOException e) {
+                System.out.println("e.toString: " + e.toString());
+                System.out.println("e.getMessage: " + e.getMessage());
+                System.out.println("printStackTrace................");
+                e.printStackTrace();
+            } catch (ClassNotFoundException e){
+                System.out.println("e.toString: " + e.toString());
+                System.out.println("e.getMessage: " + e.getMessage());
+                System.out.println("printStackTrace................");
+                e.printStackTrace();
+            }
+
+            OrderList.clear();  // 장바구니를 비우기 (모든 주문 정보 제거)
+            orderInnerValues.clear();
+//            OrderList.get(OrderList.size()-1).innerList.clear();  //TODO 왜 지워지지 않는지 조사
+
             System.out.println();
             System.out.println("\t>>장바구니를 비웠습니다.<<");
             System.out.println();
@@ -180,12 +190,14 @@ class cart
         //회원일 때
         if (sel==1)
         {
+
             //테스트
 //            hm.put("123",new Member("123","1234",1005));
             //hm.put("123",new Member("123","1234",1005));
             wan = 0;
-
-            while(true)
+            int countLogin = 1;
+            boolean loginFlag = true;
+            while(loginFlag)
             {
                 System.out.println();
                 System.out.print("\tID 입력(전화번호) : ");
@@ -196,6 +208,7 @@ class cart
                 if (!hm.containsKey(id))
                 {
                     System.out.println("\t입력하신 ID가 존재하지 않습니다.");
+                    countLogin++;
                 }
                 else
                 {
@@ -208,6 +221,12 @@ class cart
                     {
                         System.out.println("\t비밀번호가 일치하지 않습니다.");
                     }
+                }
+                if (countLogin==4)
+                {
+                    System.out.println("\n\t<<존재하지 않는 ID를 3번 이상 입력해서 회원/비회원 선택으로 돌아갑니다.>>");
+                    loginFlag = false;
+                    cartpay();
                 }
             }
             // 회원일 때 총 결제 금액 설정
@@ -227,9 +246,10 @@ class cart
                 System.out.println();
                 System.out.println("\t>>회원가입을 시작합니다.<<");
                 System.out.println("\t가입정보를 입력해주세요.");
+                int countCheck=1;
+                boolean checkFlag = true;
 
-
-                while (true)
+                while (checkFlag)
                 {
                     boolean idCheck = false;                                         // 선언 및 초기화
                     System.out.print("\tID 입력(전화번호) : ");
@@ -243,7 +263,10 @@ class cart
 
 
                     if (hm.containsKey(id))
+                    {
                         System.out.println("\n\t이미 존재하는 ID입니다.");
+                        countCheck++;
+                    }
                     else if (id.length()==11 && idCheck && id.substring(0,3).equals("010"))   // 총 11자리가 이고, 010으로 시작하고, 010 뒷부분을 숫자형태로 입력한 경우
                     {
                         String memPw;
@@ -267,6 +290,12 @@ class cart
                     }
                     else
                         System.out.println("\n\tID는 전화번호만 입력가능합니다. 다시 입력해주세요.");
+                    if (countCheck == 4)
+                    {
+                        System.out.println("\t이미 존재하는 ID를 3번 이상 입력해서 회원/비회원 선택으로 돌아갑니다.");
+                        checkFlag = false;
+                        cartpay();
+                    }
                 }
                 pointuse(memberTotal);
 
@@ -293,13 +322,33 @@ class cart
 
 
     //추가 주문 메소드(수정 필요)
-    public static void cartadd() throws IOException
+    public static void cartadd(int userSelect) throws IOException
     {
         List<Order> OrderList = CacheData.orderOuterList;
         ProductService productService = new ProductService(); // ProductService 객체 생성
 
         Kiosk ks = new Kiosk(productService);                   //장바구니 비운 후 다시 메뉴 선택창으로 가기
-        ks.kioskStart();
+        ks.menuDisp();
+        // 선택값 체크
+        SelectMenu selectMenu = new SelectMenu();
+        int listSize = 4;
+        userSelect = selectMenu.menuSelect(listSize,1);
+        ks.menuRun(userSelect);
+
+        // 선택값 리스트에 담기
+        OrderSetting orderSetting = new OrderSetting();
+        orderSetting.calculateOrderTotal();
+        orderSetting.printOrderList();
+
+        cart ca = new cart();               //-- 장바구니 인스턴스 생성
+        do
+        {
+            ca.menuDis();
+            ca.menuSel(userSelect);
+            ca.menuR(userSelect);
+        }
+        while (true);
+
     }
 
     //포인트 사용 메소드
@@ -328,6 +377,7 @@ class cart
             System.out.println();
             System.out.print("\t사용할 포인트 입력 : ");
             py = Integer.parseInt(br.readLine());
+
             System.out.println();
             wan -= py;
 
@@ -377,6 +427,7 @@ class cart
     public static void paysel(int py,int memberTotal) throws IOException
     {
         List<Order> OrderList = CacheData.orderOuterList;
+        List<OrderValues> orderInnerValues = CacheData.orderInnerValues;
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int payus=0;
@@ -404,14 +455,15 @@ class cart
             System.out.println("\t1. 카카오페이");
             System.out.println("\t2. 삼성페이");
             System.out.println("\t3. 일반결제");
+            System.out.println("\t4. 결제취소");
             System.out.println("\t=========================");
-            System.out.print("\t>>결제수단(1-3) : ");
+            System.out.print("\t>>결제수단(1-4) : ");
             try {
                 inputsel = Integer.parseInt(br.readLine());
-                if (inputsel >= 1 && inputsel <= 3) {
+                if (inputsel >= 1 && inputsel <= 4) {
                     break;
                 } else {
-                    System.out.println("1에서 3 사이의 값을 선택하세요.");
+                    System.out.println("1에서 4 사이의 값을 선택하세요.");
                     continue;
                 }
             } catch (NumberFormatException e) {
@@ -431,8 +483,19 @@ class cart
                 System.out.print("\t일반결제 잔액 입력 : ");
                 payus = Integer.parseInt(br.readLine());
                 break;
+            case 4:
+
+                OrderList.clear();
+                orderInnerValues.clear();
+                System.out.print("\t결제취소합니다.");
+                ProductService productService = new ProductService(); // ProductService 객체 생성
+
+                Kiosk ks = new Kiosk(productService);                   //장바구니 비운 후 다시 메뉴 선택창으로 가기
+                ks.kioskStart();
+
+                break;
             default:
-                System.out.print("\t1-3중에 선택해주세요.");
+                System.out.print("\t1-4중에 선택해주세요.");
                 paysel(py, memberTotal);
                 return;
         }
@@ -470,7 +533,9 @@ class cart
         }
         System.out.printf("\t남은 잔액은 %d원 입니다.", emptypay);
         System.out.println("\t결제가 완료되었습니다. 감사합니다.");
-        //장바구니 재료 증감식
+        //장바구니 재료 증감식//TODO 하기
+        OrderSetting orderSetting = new OrderSetting();
+        orderSetting.calculateOrderDiscount();
 
         receipt(memberTotal);
     }
@@ -496,10 +561,12 @@ class cart
 
             int i=1,j=1;
 
+            OrderCart oC = new OrderCart();
+            OrderList.get(OrderList.size()-1).setO_nowTime(oC.nowTime());
             for (Order order: OrderList){
                 System.out.printf("%-4d   %-8s \t%-8s \t%-8d \t%-8d\n", i++, order.getO_name(), order.getO_nowTime(), order.getO_totCalorie(), order.getO_totPrice());
-                System.out.printf("\t%-4s) %-4s \t%-4s \t%-8s \t%-8s\n", "NO", "제품", "구매수량", "칼로리", "금액");
 
+                System.out.printf("\t%-4s) %-4s \t%-4s \t%-8s \t%-8s\n", "NO", "제품", "구매수량", "칼로리", "금액");
                 for (OrderValues orderValues: orderInnerValues) {
                     System.out.printf("\t%d-%d) %-8s \t%-8s \t%-8d \t%-8d\n", i-1 , j++, orderValues.getName(), orderValues.getCount(), orderValues.getCalorie() * orderValues.getCount(), orderValues.getPrice() * orderValues.getCount());
                 }
@@ -507,21 +574,30 @@ class cart
             System.out.printf("\t\n사용한 포인트 : %d, 총 결제 금액: %d\n", emptypay, memberTotal);  // 사용한 포인트와 총 결제 금액 출력
             if (sel==1)
             {
+                OrderList.get(OrderList.size()-1).setO_name(id);
+                OrderList.get(OrderList.size()-1).setMember(true);
                 int memPoint = MemberMg.hm.get(id).getMemPoint() - emptypay+(int)(memberTotal*0.1);
+            }else {
+                OrderList.get(OrderList.size()-1).setMember(false);
             }
 
-            System.out.println("\t=========================");
+            System.out.println("\t=========================\n\n\n");
         }
         else if (con.equals("N"))
         {
             System.out.println("\t결제가 모두 완료됐습니다. 이용해주셔서 감사합니다.");
-            exitCart();
         }
         else
         {
             receipt(memberTotal);
         }
-        exitCart();
+        OrderList.clear();
+        orderInnerValues.clear();
+
+        ProductService productService = new ProductService(); // ProductService 객체 생성
+
+        Kiosk ks = new Kiosk(productService);                   //장바구니 비운 후 다시 메뉴 선택창으로 가기
+        ks.kioskStart();
     }
 }
 

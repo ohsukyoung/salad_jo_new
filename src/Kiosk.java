@@ -20,7 +20,7 @@ class Kiosk {
         // 선택값 체크
         SelectMenu selectMenu = new SelectMenu();
         int listSize = 4;
-        int userSelect = selectMenu.menuSelect(listSize);
+        int userSelect = selectMenu.menuSelect(listSize,1);
         menuRun(userSelect);
 
         // 선택값 리스트에 담기
@@ -32,8 +32,8 @@ class Kiosk {
         do
         {
             ca.menuDis();
-            ca.menuSel();
-            ca.menuR();
+            ca.menuSel(userSelect);
+            ca.menuR(userSelect);
         }
         while (true);
     }
@@ -43,9 +43,28 @@ class Kiosk {
         System.out.println("\t 1. 포장");
         System.out.println("\t 2. 매장");
         System.out.println("\t======================");
-        SelectMenu selectMenu = new SelectMenu();
+        SelectMenuAdmin selectMenu = new SelectMenuAdmin();
         int listSize = 2;
-        selectMenu.menuSelect(listSize);
+        int adminNum = -1;
+        int userSelect = selectMenu.menuSelect(listSize,adminNum);
+        if(userSelect == adminNum){
+            System.out.println("관리자화면으로 이동합니다.");
+            ad_login al = new ad_login();
+
+            try {
+                al.adLogin();
+            } catch (IOException e) {
+                System.out.println("e.toString: " + e.toString());
+                System.out.println("e.getMessage: " + e.getMessage());
+                System.out.println("printStackTrace................");
+                e.printStackTrace();
+            } catch (ClassNotFoundException e){
+                System.out.println("e.toString: " + e.toString());
+                System.out.println("e.getMessage: " + e.getMessage());
+                System.out.println("printStackTrace................");
+                e.printStackTrace();
+            }
+        }
 
         // 선택값 배열-유저 임시 이름 넣기
         List<Order> outerList = CacheData.orderOuterList;           //-- 사용자 선택 바깥(틀) 생성
