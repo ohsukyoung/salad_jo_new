@@ -71,11 +71,11 @@ class Kiosk {
         List<Order> orderOuterList = CacheData.orderOuterList;      //-- 사용자 선택 안쪽(값) 생성
 
         if (orderOuterList.isEmpty()) {
-            orderOuterList.add(new Order(USER_NAME + 1, "yyyyMMddHHmmss", 0, 0));
+            orderOuterList.add(new Order(USER_NAME + 1, "20231012100200", 0, 0));
         }
         else {
             int outerListSize = outerList.size();
-            outerList.set(outerList.size()-1,new Order(USER_NAME + outerListSize, "yyyyMMddHHmmss", 0, 0));
+            outerList.set(outerList.size()-1,new Order(USER_NAME + outerListSize, "20231012100200", 0, 0));
         }
     }
 

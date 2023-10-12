@@ -21,6 +21,16 @@ public class KioskMg
     // 사용자가 장바구니를 종료하도록 선택한 경우 호출
     public static void exitCart()
     {
+        try {
+            FileMg f = new FileMg();
+            f.memberFileOut();
+            f.receiptFileOut();
+        } catch (IOException e) {
+            System.out.println("e.toString: " + e.toString());
+            System.out.println("e.getMessage: " + e.getMessage());
+            System.out.println("printStackTrace................");
+            e.printStackTrace();
+        }
         Exit = true;
         System.exit(0);
     }
@@ -68,6 +78,10 @@ public class KioskMg
 
         MemberMg mm = new MemberMg();
         SalesMg sm = new SalesMg();
+
+        FileMg f = new FileMg();
+        MemberMg.hm = f.memberFileIn();
+        SalesMg.receipts = f.receiptFileIn();
 
         // 클래스를 활용하여 처리
         if (sel==E_STOCKMG){
@@ -177,7 +191,21 @@ public class KioskMg
         }
         else if (sel==E_KIOSKSTART) // 6. 판매시작(사용자 화면으로 이동)
         {
-            ad_login.kioskFlag = false;
+            try {
+                f.memberFileOut();
+                f.receiptFileOut();
+                //f.orderOuterFileOut();//TODO 문제 없는지 확인 필요
+
+            } catch (IOException e) {
+                System.out.println("e.toString: " + e.toString());
+                System.out.println("e.getMessage: " + e.getMessage());
+                System.out.println("printStackTrace................");
+                e.printStackTrace();
+            }
+            ProductService productService = new ProductService(); // ProductService 객체 생성
+            Kiosk ks = new Kiosk(productService);
+            ks.kioskStart();
+//            ad_login.kioskFlag = false;
         }
         else if (sel == E_END)      //프로그램 종료
         {

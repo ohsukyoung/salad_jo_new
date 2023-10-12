@@ -33,8 +33,7 @@ public class ad_login {
                 System.out.println();
             }
         }
-        kioskFlag = true;
-        while(kioskFlag)
+        while(true)
         {
             KioskMg km = new KioskMg();
             km.adMenuDisp();

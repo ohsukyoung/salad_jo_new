@@ -24,7 +24,12 @@ public abstract class Super_Select implements Super_Select_Interface {
         try {
             do {
                 System.out.printf(message);
-                userSelect = Integer.parseInt(br.readLine());
+                String userInput = br.readLine();
+                if (userInput.isEmpty()) {
+                    System.out.println("\t잘못 입력되었습니다. 다시 입력해주세요.");
+                    continue;
+                }
+                userSelect = Integer.parseInt(userInput);
                 if (userSelect < minNum || userSelect > listSize)
                     System.out.println(errorMsg);
             } while (userSelect < minNum || userSelect > listSize);

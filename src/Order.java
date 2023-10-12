@@ -174,6 +174,22 @@ public class Order implements Serializable{
     public void setCancelled(boolean cancelled) {
         isCancelled = cancelled;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "o_name='" + o_name + '\'' +
+                ", o_nowTime='" + o_nowTime + '\'' +
+                ", innerList=" + innerList +
+                ", o_totCalorie=" + o_totCalorie +
+                ", o_totPrice=" + o_totPrice +
+                ", isMember=" + isMember +
+                ", usedPoints=" + usedPoints +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", totalAmount=" + totalAmount +
+                ", isCancelled=" + isCancelled +
+                '}';
+    }
 }
 
 class OrderCart {
@@ -205,6 +221,10 @@ class OrderSetting {
         }
 
         for (Order order: OrderList){
+            order.setO_totCalorie(0);
+            order.setO_totPrice(0);
+        }
+        for (Order order: OrderList){
           for (OrderValues orderValues: orderValueList){
               order.setO_totCalorie(order.getO_totCalorie()+(orderValues.getCalorie() * orderValues.getCount()));
               order.setO_totPrice(order.getO_totPrice()+(orderValues.getPrice() * orderValues.getCount()));
@@ -213,49 +233,23 @@ class OrderSetting {
     }
 
     void calculateOrderDiscount() {            // 선택 값에 따라 재고에서 선택값 빼주기
-//        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         List<Product> List1 = CacheData.list1;
         List<Order> OrderList = CacheData.orderOuterList;
         List<OrderValues> orderValueList = CacheData.orderInnerValues;
         int productIdx = 0;
         for (Order order: OrderList){
             for (OrderValues orderValues: orderValueList){
-//                System.out.println(orderValues.getName());
                 for(Product list1 : List1){
                     if(list1.getP_name().equals(orderValues.getName())){
                         productIdx = List1.indexOf(list1);
-//                        System.out.println(List1.indexOf(list1));
                         break;
                     }
                 }
                 int productCount = List1.get(productIdx).getP_count();
                 int productDiscount = orderValues.getCount();
                 List1.get(productIdx).setP_count(productCount - productDiscount);
-//                System.out.println("productCount: " + productCount);
-//                System.out.println("productDiscount: " + productDiscount);
-//                System.out.println("List1.get(productIdx): " + List1.get(productIdx).getP_count());
-            }
+           }
         }
-
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~ test
-        /*System.out.println("[[1.전체 재료정보 출력]]========================================================================");
-        System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
-                "구분번호", "분류번호", "이름", "단위", "개수", "칼로리", "적정재고", "금액");
-        System.out.println("===========================================================================================");
-
-        // Iterator 활용하여 출력
-        List<Product> product = CacheData.list1;
-        Iterator<Product> itList;
-        itList = product.iterator();
-        while (itList.hasNext())
-        {
-            Product itS = itList.next();
-            System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n", itS.getP_checkNumber(),
-                    itS.getP_material(), itS.getP_name(), itS.getP_unit(), itS.getP_count(), itS.getP_calorie(),
-                    itS.getP_stock(), itS.getP_price());
-        }
-        System.out.println();*/
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~ test
 
     }
 

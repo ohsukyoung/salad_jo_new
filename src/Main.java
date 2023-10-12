@@ -14,11 +14,13 @@ class CacheData {
     static List<OrderValues> orderInnerValues;                  // 사용자 선택 안쪽(값) 리스트
     static List<Product> list1 = new ArrayList<>();             // 사장추천이외(나만의 샐러드, 음료, 사이드, 샐러드세부재료 등)의 리스트 // TODO 리스트 이름 공통화(ex.allProductList)
     static List<MasterRc> list2 = new ArrayList<>();            // 사장추천 리스트
+    static List<Product> list3 = new ArrayList<>();
+    static List<MasterRc> list4 = new ArrayList<>();
 //    static ArrayList<Receipt> receipts = SalesMg.receipts;
 
     static{
         // 사용자 선택 리스트 값 입력을 위한 첫번째 객체 추가
-        orderOuterList.add(new Order());
+        orderOuterList.add(new Order("1", "20231012100200", 0, 0));
         orderInnerValues = orderOuterList.get(orderOuterList.size()-1).innerList;
 
         //  settingAllProductList
@@ -140,8 +142,8 @@ public class Main {
         al.adLogin();
 //
 //        // 객체 파일 내보내기
-        f.memberFileOut();
-        f.receiptFileOut();
+       /* f.memberFileOut();
+        f.receiptFileOut();*/
 
 //        System.out.println("\n\n\t====[[[[[ 사용자 화면 ]]]]]====");
 //
@@ -150,9 +152,9 @@ public class Main {
 //        emp.empWelcome();
 //
         // 사용자 폼
-        ProductService productService = new ProductService(); // ProductService 객체 생성
+      /*  ProductService productService = new ProductService(); // ProductService 객체 생성
         Kiosk ks = new Kiosk(productService);
-        ks.kioskStart();
+        ks.kioskStart();*/
 
 
     }

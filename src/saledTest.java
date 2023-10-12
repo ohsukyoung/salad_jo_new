@@ -23,15 +23,15 @@ class cart
 {
 
     private static String memPw;
-    //private static final ArrayList<Object> al;  //자료구조
     private static BufferedReader br;           //입력 시 활용
     private static String con;                  //Y,N으로 계속 진행 여부
     private static Integer sel;                 //선택값
     static String id;
     private static int emptypay;
-    private static boolean shouldExit = false;  // 종료 여부를 나타내는 변수
 
     static final double pointad = 0.10;            //10%씩 적립할 변수
+
+    public static int payPoint;
 
     static
     {
@@ -50,7 +50,7 @@ class cart
     }
 
 //    private static HashMap<String,Member> hm = new HashMap<String,Member>();
-    private static HashMap<String,Member> hm = MemberMg.hm;
+
     Member m = new Member();
 
     static int py=0;
@@ -111,32 +111,30 @@ class cart
     //자료구조에 장바구니 비우기 메소드
     public static void cartdel() throws IOException
     {
-        List<Order> OrderList = CacheData.orderOuterList;
         List<OrderValues> orderInnerValues = CacheData.orderInnerValues;
-        System.out.print("\n\t장바구니를 비우시겠습니까(Y/N)? : ");
-        con = br.readLine().toUpperCase();
-
-        if (con.equals("Y"))                                        //장바구니를 비우기로 했으면 자료구조 비우기
-        {
-            // TODO 파일 내보내기
+        List<Order> OrderList = CacheData.orderOuterList;
+        if(OrderList.get(OrderList.size()-1).getO_totPrice() == 0){
             try {
-                FileMg f = new FileMg();
-                f.orderOuterFileOut();
-                f.orderInnerValuesFileOut();
-                CacheData.orderOuterList = f.orderOuterFileIn();
-                CacheData.orderInnerValues = f.orderInnerValuesFileIn();
+                System.out.println("\n\t>>결제금액이 0원으로 처음으로 되돌아갑니다.<<");
+                ProductService productService = new ProductService(); // ProductService 객체 생성
+
+
+                Kiosk ks = new Kiosk(productService);                   //장바구니 비운 후 다시 메뉴 선택창으로 가기
+                ks.kioskStart();
             } catch (IOException e) {
                 System.out.println("e.toString: " + e.toString());
                 System.out.println("e.getMessage: " + e.getMessage());
                 System.out.println("printStackTrace................");
                 e.printStackTrace();
-            } catch (ClassNotFoundException e){
-                System.out.println("e.toString: " + e.toString());
-                System.out.println("e.getMessage: " + e.getMessage());
-                System.out.println("printStackTrace................");
-                e.printStackTrace();
             }
+        }
 
+
+        System.out.print("\n\t장바구니를 비우시겠습니까(Y/N)? : \n");
+        con = br.readLine().toUpperCase();
+
+        if (con.equals("Y"))                                        //장바구니를 비우기로 했으면 자료구조 비우기
+        {
             OrderList.clear();  // 장바구니를 비우기 (모든 주문 정보 제거)
             orderInnerValues.clear();
 //            OrderList.get(OrderList.size()-1).innerList.clear();  //TODO 왜 지워지지 않는지 조사
@@ -152,7 +150,9 @@ class cart
         }
         else if (con.equals("N"))                                   //장바구니를 비우지 않는다 하면 장바구니로 돌아가기
         {
-            System.out.println();
+            OrderSetting orderSetting = new OrderSetting();
+            orderSetting.calculateOrderTotal();
+            orderSetting.printOrderList();
             System.out.println();
             System.out.println("\t>>장바구니로 돌아갑니다.<<");
             System.out.println();
@@ -190,10 +190,6 @@ class cart
         //회원일 때
         if (sel==1)
         {
-
-            //테스트
-//            hm.put("123",new Member("123","1234",1005));
-            //hm.put("123",new Member("123","1234",1005));
             wan = 0;
             int countLogin = 1;
             boolean loginFlag = true;
@@ -205,14 +201,14 @@ class cart
                 System.out.print("\tPassword 입력(4자리) : ");
                 memPw = br.readLine();
 
-                if (!hm.containsKey(id))
+                if (!MemberMg.hm.containsKey(id))
                 {
                     System.out.println("\t입력하신 ID가 존재하지 않습니다.");
                     countLogin++;
                 }
                 else
                 {
-                    if (hm.get(id).getMemPw().equals(memPw))
+                    if (MemberMg.hm.get(id).getMemPw().equals(memPw))
                     {
                         System.out.println("\t아이디와 비밀번호가 일치합니다.");
                         break;
@@ -262,7 +258,7 @@ class cart
                     }
 
 
-                    if (hm.containsKey(id))
+                    if (MemberMg.hm.containsKey(id))
                     {
                         System.out.println("\n\t이미 존재하는 ID입니다.");
                         countCheck++;
@@ -283,7 +279,7 @@ class cart
                             else
                                 System.out.println("\n\tPassword는 숫자 4자리만 입력가능합니다. 다시 입력해주세요.");
                         }
-                        hm.put(id,new Member(id,memPw,1000));
+                        MemberMg.hm.put(id,new Member(id,memPw,1000));
                         System.out.println("\t회원가입이 완료되었습니다.");
                         sel=1;
                         break;
@@ -365,7 +361,7 @@ class cart
         // 수경--
         //System.out.println(outerList.get(useridx-1).getO_totPrice());
 
-        System.out.printf("\t보유한 포인트 %d를 사용하시겠습니까(Y/N)?" , hm.get(id).getMemPoint());
+        System.out.printf("\t보유한 포인트 %d를 사용하시겠습니까(Y/N)?" , MemberMg.hm.get(id).getMemPoint());
         con = br.readLine().toUpperCase();
 
 
@@ -381,7 +377,7 @@ class cart
             System.out.println();
             wan -= py;
 
-            if (py > hm.get(id).getMemPoint()) {
+            if (py > MemberMg.hm.get(id).getMemPoint()) {
                 System.out.println("\n\t보유한 포인트보다 많은 포인트를 입력하셨습니다.");
                 pointuse(memberTotal);
                 return;
@@ -401,7 +397,7 @@ class cart
             tot = OrderList.get(OrderList.size()-1).getO_totPrice()-py;
             emptypay = py;
 
-            System.out.printf("\t남은 포인트: %d\n", hm.get(id).getMemPoint()-py);
+            System.out.printf("\t남은 포인트: %d\n", MemberMg.hm.get(id).getMemPoint()-py);
 
             paysel(py, memberTotal);
 
@@ -412,7 +408,7 @@ class cart
             wan = 0;
             //결제수단으로 이동
             System.out.println();
-            System.out.printf("\t남은 포인트 : %d" , hm.get(id).getMemPoint());
+            System.out.printf("\t남은 포인트 : %d" , MemberMg.hm.get(id).getMemPoint());
             System.out.println();
             System.out.println("\t>>결제수단으로 갑니다.<<");
             paysel(py, memberTotal);
@@ -431,6 +427,7 @@ class cart
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int payus=0;
+        String paymentMethod = null;
 
         if (sel==1) {
             // 회원일 경우 총 결제 금액
@@ -470,6 +467,15 @@ class cart
                 System.out.println("올바른 숫자를 입력하세요.");
             }
         }
+
+        switch (inputsel){
+            case 1 : paymentMethod = "카카오페이"; break;
+            case 2 : paymentMethod = "삼성페이"; break;
+            case 3 : paymentMethod = "일반결제"; break;
+        }
+
+        OrderList.get(OrderList.size() - 1).setPaymentMethod(paymentMethod);
+
         switch (inputsel) {
             case 1:
                 System.out.print("\t카카오페이 잔액 입력 : ");
@@ -487,6 +493,7 @@ class cart
 
                 OrderList.clear();
                 orderInnerValues.clear();
+                payPoint=0;
                 System.out.print("\t결제취소합니다.");
                 ProductService productService = new ProductService(); // ProductService 객체 생성
 
@@ -576,7 +583,8 @@ class cart
             {
                 OrderList.get(OrderList.size()-1).setO_name(id);
                 OrderList.get(OrderList.size()-1).setMember(true);
-                int memPoint = MemberMg.hm.get(id).getMemPoint() - emptypay+(int)(memberTotal*0.1);
+                payPoint = MemberMg.hm.get(id).getMemPoint() - emptypay+(int)(memberTotal*0.1);
+                MemberMg.hm.get(id).setMemPoint(payPoint);
             }else {
                 OrderList.get(OrderList.size()-1).setMember(false);
             }
@@ -591,6 +599,26 @@ class cart
         {
             receipt(memberTotal);
         }
+        try {
+            FileMg f = new FileMg();
+            //f.orderOuterFileOut();
+            f.memberFileOut();
+            f.receiptFileOut();
+            //f.orderInnerValuesFileOut();
+            CacheData.orderOuterList = f.orderOuterFileIn();
+            //CacheData.orderInnerValues = f.orderInnerValuesFileIn();
+        } catch (IOException e) {
+            System.out.println("e.toString: " + e.toString());
+            System.out.println("e.getMessage: " + e.getMessage());
+            System.out.println("printStackTrace................");
+            e.printStackTrace();
+        } catch (ClassNotFoundException e){
+            System.out.println("e.toString: " + e.toString());
+            System.out.println("e.getMessage: " + e.getMessage());
+            System.out.println("printStackTrace................");
+            e.printStackTrace();
+        }
+        payPoint=0;
         OrderList.clear();
         orderInnerValues.clear();
 

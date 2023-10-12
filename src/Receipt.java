@@ -85,4 +85,19 @@ public class Receipt implements Serializable
 
     public String getMemberId() {return memberId;}
 
+    @Override
+    public String toString() {
+        return "Receipt{" +
+                "year=" + year +
+                ", month=" + month +
+                ", day=" + day +
+                ", hour=" + hour +
+                ", isMember=" + isMember +
+                ", usedPoints=" + usedPoints +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", totalAmount=" + totalAmount +
+                ", isCancelled=" + isCancelled +
+                ", memberId='" + memberId + '\'' +
+                '}';
+    }
 }
