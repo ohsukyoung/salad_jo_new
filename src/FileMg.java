@@ -44,33 +44,33 @@ public class FileMg
         }
     }
 
-    public List<Order> orderOuterFileIn() throws IOException, ClassNotFoundException{
-        List<Order> orderOuterList = new ArrayList<>();
-        try {
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("data/order.ser"));
-            orderOuterList = (List<Order>) ois.readObject();
-            ois.close();
-            return orderOuterList;
-        }catch (FileNotFoundException fnfe)
-        {
-            System.out.println("\torder.ser 파일을 찾을 수 없습니다.");
-            return orderOuterList;
-        }
-    }
-
-    public List<OrderValues> orderInnerValuesFileIn() throws IOException, ClassNotFoundException{
-        List<OrderValues> orderInnerValues = new ArrayList<>();
-        try {
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("data/orderValue.ser"));
-            orderInnerValues = (List<OrderValues>) ois.readObject();
-            ois.close();
-            return orderInnerValues;
-        }catch (FileNotFoundException fnfe)
-        {
-            System.out.println("\torderValue.ser 파일을 찾을 수 없습니다.");
-            return orderInnerValues;
-        }
-    }
+//    public List<Order> orderOuterFileIn() throws IOException, ClassNotFoundException{
+//        List<Order> orderOuterList = new ArrayList<>();
+//        try {
+//            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("data/order.ser"));
+//            orderOuterList = (List<Order>) ois.readObject();
+//            ois.close();
+//            return orderOuterList;
+//        }catch (FileNotFoundException fnfe)
+//        {
+//            System.out.println("\torder.ser 파일을 찾을 수 없습니다.");
+//            return orderOuterList;
+//        }
+//    }
+//
+//    public List<OrderValues> orderInnerValuesFileIn() throws IOException, ClassNotFoundException{
+//        List<OrderValues> orderInnerValues = new ArrayList<>();
+//        try {
+//            ObjectInputStream ois = new ObjectInputStream(new FileInputStream("data/orderValue.ser"));
+//            orderInnerValues = (List<OrderValues>) ois.readObject();
+//            ois.close();
+//            return orderInnerValues;
+//        }catch (FileNotFoundException fnfe)
+//        {
+//            System.out.println("\torderValue.ser 파일을 찾을 수 없습니다.");
+//            return orderInnerValues;
+//        }
+//    }
 
     public List<Product> list1FileIn() throws IOException, ClassNotFoundException{
         List<Product> list1fileIn = new ArrayList<>();
@@ -81,7 +81,7 @@ public class FileMg
             return list1fileIn;
         }catch (FileNotFoundException fnfe)
         {
-            System.out.println("\torder.ser 파일을 찾을 수 없습니다.");
+            System.out.println("\tlist1.ser 파일을 찾을 수 없습니다.");
             return list1fileIn;
         }
     }
@@ -94,7 +94,7 @@ public class FileMg
             return list2fileIn;
         }catch (FileNotFoundException fnfe)
         {
-            System.out.println("\torder.ser 파일을 찾을 수 없습니다.");
+            System.out.println("\tlist2.ser 파일을 찾을 수 없습니다.");
             return list2fileIn;
         }
     }
@@ -108,7 +108,7 @@ public class FileMg
             return list3fileIn;
         }catch (FileNotFoundException fnfe)
         {
-            System.out.println("\torder.ser 파일을 찾을 수 없습니다.");
+            System.out.println("\tlist3.ser 파일을 찾을 수 없습니다.");
             return list3fileIn;
         }
     }
@@ -121,7 +121,7 @@ public class FileMg
             return list4fileIn;
         }catch (FileNotFoundException fnfe)
         {
-            System.out.println("\torder.ser 파일을 찾을 수 없습니다.");
+            System.out.println("\tlist4.ser 파일을 찾을 수 없습니다.");
             return list4fileIn;
         }
     }
@@ -172,37 +172,37 @@ public class FileMg
         oos.close();
     }
 
-    public void orderOuterFileOut() throws IOException{
-        String appDir = System.getProperty("user.dir");
-        //-- 시스템 속성으로부터 현재 사용자가 사용중인 디렉토리 정보 얻어오기
+//    public void orderOuterFileOut() throws IOException{
+//        String appDir = System.getProperty("user.dir");
+//        //-- 시스템 속성으로부터 현재 사용자가 사용중인 디렉토리 정보 얻어오기
+//
+//        File f0 = new File(appDir, "/data/order.ser");
+//
+//        List<Order> orderOuterList = CacheData.orderOuterList;
+//        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f0));
+//
+//        // 생성된 스트림에 내보낼 객체를 기록
+//        oos.writeObject(orderOuterList);
+//
+//        oos.close();
+//    }
+//
+//    public void orderInnerValuesFileOut() throws IOException{
+//        String appDir = System.getProperty("user.dir");
+//        //-- 시스템 속성으로부터 현재 사용자가 사용중인 디렉토리 정보 얻어오기
+//
+//        File f0 = new File(appDir, "/data/orderInnerValues.ser");
+//
+//        List<OrderValues> orderInnerValues = CacheData.orderInnerValues;
+//        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f0));
+//
+//        // 생성된 스트림에 내보낼 객체를 기록
+//        oos.writeObject(orderInnerValues);
+//
+//        oos.close();
+//    }
 
-        File f0 = new File(appDir, "/data/order.ser");
-
-        List<Order> orderOuterList = CacheData.orderOuterList;
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f0));
-
-        // 생성된 스트림에 내보낼 객체를 기록
-        oos.writeObject(orderOuterList);
-
-        oos.close();
-    }
-
-    public void orderInnerValuesFileOut() throws IOException{
-        String appDir = System.getProperty("user.dir");
-        //-- 시스템 속성으로부터 현재 사용자가 사용중인 디렉토리 정보 얻어오기
-
-        File f0 = new File(appDir, "/data/orderInnerValues.ser");
-
-        List<OrderValues> orderInnerValues = CacheData.orderInnerValues;
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f0));
-
-        // 생성된 스트림에 내보낼 객체를 기록
-        oos.writeObject(orderInnerValues);
-
-        oos.close();
-    }
-
-    public void list1FileFileOut() throws IOException, ClassNotFoundException{
+    public void list1FileOut() throws IOException, ClassNotFoundException{
         String appDir = System.getProperty("user.dir");
         //-- 시스템 속성으로부터 현재 사용자가 사용중인 디렉토리 정보 얻어오기
 
@@ -216,7 +216,7 @@ public class FileMg
 
         oos.close();
     }
-    public void list2FileFileOut() throws IOException, ClassNotFoundException{
+    public void list2FileOut() throws IOException, ClassNotFoundException{
         String appDir = System.getProperty("user.dir");
         //-- 시스템 속성으로부터 현재 사용자가 사용중인 디렉토리 정보 얻어오기
 
@@ -231,7 +231,7 @@ public class FileMg
         oos.close();
     }
 
-    public void list3FileFileOut() throws IOException, ClassNotFoundException{
+    public void list3FileOut() throws IOException, ClassNotFoundException{
         String appDir = System.getProperty("user.dir");
         //-- 시스템 속성으로부터 현재 사용자가 사용중인 디렉토리 정보 얻어오기
 
@@ -245,7 +245,7 @@ public class FileMg
 
         oos.close();
     }
-    public void list4FileFileOut() throws IOException, ClassNotFoundException{
+    public void list4FileOut() throws IOException, ClassNotFoundException{
         String appDir = System.getProperty("user.dir");
         //-- 시스템 속성으로부터 현재 사용자가 사용중인 디렉토리 정보 얻어오기
 

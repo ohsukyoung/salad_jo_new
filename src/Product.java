@@ -1,15 +1,9 @@
 import java.util.List;
-import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Serializable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
 import java.util.Iterator;
 
 enum ProductType {              // 제품 열거혐(Enum)
@@ -94,6 +88,7 @@ public class Product implements Serializable, Impl_admin {
     private int p_stock;
     private int p_price;
     private ProductType type;
+    private int p_limitCount;
 
 
     public Product(int p_checkNumber, ProductType type,int p_material, String p_name, String p_unit, int p_count, int p_calorie, int p_stock, int p_price) {
@@ -141,6 +136,26 @@ public class Product implements Serializable, Impl_admin {
     public void setP_stock(int p_stock) { this.p_stock = p_stock; }
     public int getP_price() { return p_price; }
     public void setP_price(int p_price) { this.p_price = p_price; }
+    public int getP_limitCount() { return p_limitCount; }
+    public void setP_limitCount(int p_limitCount) { this.p_limitCount = p_limitCount; }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+//                "appDir='" + appDir + '\'' +
+                ", br=" + br +
+                ", p_checkNumber=" + p_checkNumber +
+                ", p_material=" + p_material +
+                ", p_name='" + p_name + '\'' +
+                ", p_unit='" + p_unit + '\'' +
+                ", p_count=" + p_count +
+                ", p_calorie=" + p_calorie +
+                ", p_stock=" + p_stock +
+                ", p_price=" + p_price +
+                ", type=" + type +
+                ", p_limitCount=" + p_limitCount +
+                '}';
+    }
 
     @Override
     public void ad_print() throws IOException, ClassNotFoundException {
@@ -197,11 +212,11 @@ public class Product implements Serializable, Impl_admin {
                     int materialNumber = Integer.parseInt(br.readLine());
 
                     // Iterator 활용하여 선택한 분류번호에 해당하는 재료 정보 출력
-                    Iterator<Product> itList2;
-                    itList2 = product.iterator();
-                    while (itList2.hasNext())
+                    Iterator<Product> itList1;
+                    itList1 = product.iterator();
+                    while (itList1.hasNext())
                     {
-                        Product itS = itList2.next();
+                        Product itS = itList1.next();
                         if (itS.getP_material() == materialNumber)
                         {
                             System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n", itS.getP_checkNumber(),
@@ -308,11 +323,15 @@ public class Product implements Serializable, Impl_admin {
     //            Product product = new Product(p_checkNumber, p_material, p_name, p_unit, p_count, p_calorie, p_stock, p_price);
                         Product product = new Product(p_checkNumber, productType, p_material, p_name, p_unit, p_count, p_calorie, p_stock, p_price);
                         list1.add(product);
+                        System.out.println("저장되었습니다.");
 //                        break;
                     }
-//                    else {
-//                        break;
-//                    }
+                    else{
+                        System.out.println("올바른 값을 입력하시오.");
+                        return;
+                    }
+
+
 
                 }
                 KioskMg.productflag = false;
@@ -333,9 +352,15 @@ public class Product implements Serializable, Impl_admin {
 //        FileInputStream fis = new FileInputStream(f0);
 //        ObjectInputStream ois = new ObjectInputStream(fis);
 //        List<Product> product = (List<Product>) ois.readObject();
-        List<Product> product = CacheData.list1;
+
 //        ois.close();
 //        fis.close();
+        List<Product> product = CacheData.list1;
+        FileMg f = new FileMg();
+        CacheData.list1 = f.list1FileIn();
+        CacheData.list3 = f.list3FileIn();
+
+
 
         System.out.println("[[3.재료정보 변경]]========================================================================");
         System.out.print("작업할 대상의 구분번호를 입력하시오 : ");
@@ -371,6 +396,9 @@ public class Product implements Serializable, Impl_admin {
 //                        oos.writeObject(product);
 //                        oos.close();
 //                        fos.close();
+                        System.out.println("수정되었습니다.");
+                        f.list1FileOut();
+                        f.list3FileOut();
                         break;
                     }
                     switch (a) {
@@ -441,9 +469,13 @@ public class Product implements Serializable, Impl_admin {
 //        FileInputStream fis = new FileInputStream(f0);
 //        ObjectInputStream ois = new ObjectInputStream(fis);
 //        List<Product> product = (List<Product>)ois.readObject();
-        List<Product> product = CacheData.list1;
+
 //        ois.close();
 //        fis.close();
+        List<Product> product = CacheData.list1;
+        FileMg f = new FileMg();
+        CacheData.list1 = f.list1FileIn();
+        CacheData.list3 = f.list3FileIn();
 
 
         System.out.println("[[4.재료정보 삭제]]========================================================================");
@@ -471,7 +503,13 @@ public class Product implements Serializable, Impl_admin {
                 char x = br.readLine().charAt(0);
                 if (x == 'Y' || x == 'y') {
                     deleteIndex = i; // 삭제 대상 재료의 인덱스 설정
+                    f.list1FileOut();
+                    f.list3FileOut();
                     break;
+                }
+                else{
+                    System.out.println("올바른 값을 입력하시오.");
+                    return;
                 }
             }
         }
@@ -485,7 +523,7 @@ public class Product implements Serializable, Impl_admin {
         if (deleteIndex != -1)
         {
             product.remove(deleteIndex);
-//
+            System.out.println("삭제되었습니다.");
 //            // 변경된 정보를 저장
 //            FileOutputStream fos = new FileOutputStream(f0);
 //            ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -498,5 +536,4 @@ public class Product implements Serializable, Impl_admin {
 
 
     }
-
 }

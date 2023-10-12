@@ -40,7 +40,7 @@ public class MemberMg implements Impl_admin
         System.out.println("\t4. 회원 삭제");
         System.out.println("\t5. 관리자 메뉴 화면으로 이동");
         System.out.println("\t==============================");
-        System.out.print("\t>> 메뉴 선택(1~5) : ");
+        System.out.print("\t▶ 메뉴 선택(1~5) : ");
     }
 
     // 메뉴 선택 메소드
@@ -59,7 +59,7 @@ public class MemberMg implements Impl_admin
             case E_MOD : ad_modify(); break;
             case E_DEL : ad_delete(); break;
             case E_EXIT : exit(); break;
-            default : System.out.print("메뉴 선택 오류~!!!");
+            default : System.out.print("[!] 메뉴 선택 오류");
         }
     }
 

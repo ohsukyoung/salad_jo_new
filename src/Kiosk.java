@@ -10,6 +10,8 @@ class Kiosk {
     final String USER_NAME = "고객";      //-- 사용자 임의의 이름
     public Imp_info info;                      //-- info 틀 생성
 
+    static boolean storeflag = true;
+
     public Kiosk(ProductService productService) {
         this.info = new InfoService(productService);
     }
@@ -39,16 +41,24 @@ class Kiosk {
     }
 
     public void storePack() {
-        System.out.println("\n\t[ 포장/매장 선택 ]===========");
-        System.out.println("\t 1. 포장");
-        System.out.println("\t 2. 매장");
-        System.out.println("\t======================");
+        List<Order> OrderList = CacheData.orderOuterList;
+        String payMe = null;
+        System.out.println("\n\t[ 포장/매장 선택 ]=============");
+        System.out.println("\t1. 포장");
+        System.out.println("\t2. 매장");
+        System.out.println("\t==============================");
         SelectMenuAdmin selectMenu = new SelectMenuAdmin();
         int listSize = 2;
         int adminNum = -1;
         int userSelect = selectMenu.menuSelect(listSize,adminNum);
+
+        if(userSelect==1)
+        {
+            storeflag = false;
+        }
+
         if(userSelect == adminNum){
-            System.out.println("관리자화면으로 이동합니다.");
+            System.out.println("\n\t「 관리자화면으로 이동합니다. 」");
             ad_login al = new ad_login();
 
             try {
@@ -81,12 +91,12 @@ class Kiosk {
 
     public void menuDisp() {
         System.out.println("\n\t[ 사용자 메뉴 선택 ]===========");
-        System.out.println("\t 1. 사장추천");
-        System.out.println("\t 2. 나만의 샐러드");
-        System.out.println("\t 3. 음료");
-        System.out.println("\t 4. 사이드");
+        System.out.println("\t1. 사장추천");
+        System.out.println("\t2. 나만의 샐러드");
+        System.out.println("\t3. 음료");
+        System.out.println("\t4. 사이드");
 //        System.out.println("\t - 뒤로가기(c)");
-        System.out.println("\t======================");
+        System.out.println("\t=============================");
     }
 
     public void menuRun(int userSelect) {
@@ -114,12 +124,12 @@ class Kiosk {
     }
 
     public void menuRcmd() {
-        System.out.println("\n\t1. 사장추천 ---------------------- ");
+        System.out.println("\n\t[ 1. 사장추천 ]");
         info.printInfo(ProductType.RCMND);
     }
 
     public void menuMySalad() {
-        System.out.println("\n\t2. 나만의 샐러드 ---------------------- ");
+        System.out.println("\n\t[ 2. 나만의 샐러드 ]");
         OrderValues orderValues;
         info.printInfo(ProductType.S_BASE);
 
@@ -131,12 +141,12 @@ class Kiosk {
     }
 
     public void menuDrink() {
-        System.out.println("\n\t2. 음료 ---------------------- ");
+        System.out.println("\n\t[ 3. 음료 ]");
         info.printInfo(ProductType.DRINK);
     }
 
     public void menuSide() {
-        System.out.println("\n\t2. 사이드 ---------------------- ");
+        System.out.println("\n\t[ 4. 사이드 ]");
         info.printInfo(ProductType.SIDE);
     }
 

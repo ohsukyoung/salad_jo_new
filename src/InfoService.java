@@ -31,7 +31,7 @@ class InfoService implements Imp_info {
             selectContinue.menuSelectProduct(productList);
         }else {
             // 리스트 출력
-            List<MasterRc> masterList = CacheData.list2;
+            List<MasterRc> masterList = CacheData.list4;
             printInfoHeader(productType);
             printInfoBodyMaster(productType, masterList);
 
@@ -43,18 +43,19 @@ class InfoService implements Imp_info {
 
     // 출력 리스트 header
     public void printInfoHeader(ProductType productType) {
-
+        System.out.println("\t-----------------------------------------------------------------------------");
         if(productType != ProductType.RCMND)    // 사장추천이 아닐 경우
-            System.out.printf("%-4s| %-8s|\t%-8s|\t%-8s|\t%-8s\t|\t%-8s\n", "번호", "상품명", "단위", "칼로리", "가격", "남은수량");
+            System.out.printf("\t%-4s| %-8s|\t%-8s|\t%-8s|\t%-8s\t|\t%-8s\n", "번호", "상품명", "단위", "칼로리", "가격", "남은수량");
         else
-            System.out.printf("%-4s| %-8s|\t%-8s|\t%-8s\t|\t%-8s|\t%-8s\n", "번호", "상품명", "칼로리", "가격", "남은수량", "상세재료");
+            System.out.printf("\t%-4s| %-8s|\t%-8s|\t%-8s\t|\t%-8s|\t%-8s\n", "번호", "상품명", "칼로리", "가격", "남은수량", "상세재료");
+        System.out.println("\t-----------------------------------------------------------------------------");
     }
 
     // 출력 리스트 body>Mast
     public void printInfoBodyMaster(ProductType productType, List<MasterRc> productInfo) {
         int index=1;
         for(MasterRc masterRc : productInfo){
-            System.out.printf("%-4d   %-8s \t%-8d \t%-8d \t%-8d", index++, masterRc.getR_name(), masterRc.getR_totalcalorie(), masterRc.getR_price(), masterRc.getR_count());
+            System.out.printf("\t%-4d   %-8s \t%-8d \t%-8d \t%-8d", index++, masterRc.getR_name(), masterRc.getR_totalcalorie(), masterRc.getR_price(), masterRc.getR_count());
             System.out.printf("\t");
             for (Product product : masterRc.getR_products())
             {
@@ -62,17 +63,23 @@ class InfoService implements Imp_info {
             }
             System.out.println();
         }
+        System.out.println("\t-----------------------------------------------------------------------------");
     }
 
     // 출력 리스트 body>Product
     public void printInfoBodyProduct(ProductType productType, List<Product> productInfo) {
         if(productType != ProductType.RCMND){   // 사장추천이 아닐 경우
             int index=1;
+
             for(Product product : productInfo){
-                if(product.getP_count()>product.getP_stock())
-                    System.out.printf("%-4d   %-8s \t%-8s \t%-8s\t \t%-8d \t%-8d\n", index++, product.getP_name(), product.getP_unit(), product.getP_calorie(), product.getP_price(), product.getP_count() - product.getP_stock());
-                else index++;
+                if(CacheData.orderInnerValues.isEmpty()){  // 초기값 셋팅
+                    product.setP_limitCount(product.getP_count() - product.getP_stock());
+                }
+
+                System.out.printf("\t%-4d   %-8s \t%-8s \t%-8s\t \t%-8d \t%-8d\n",
+                    index++, product.getP_name(), product.getP_unit(), product.getP_calorie(), product.getP_price(), product.getP_limitCount());
             }
+            System.out.println("\t-----------------------------------------------------------------------------");
         }
     } // end: printInfoBodyProduct
 }

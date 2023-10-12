@@ -1,19 +1,11 @@
+import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.util.Iterator;
 
 class MasterRc implements Serializable ,Impl_admin
 {
+    private static final long serialVersionUID = -2026629343147755130L;
     Product product = new Product();
     String appDir = System.getProperty("user.dir");
     private transient BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -26,10 +18,9 @@ class MasterRc implements Serializable ,Impl_admin
     private List<Product> r_products; // 재료 목록
     private ProductType type;
     private int r_count;
+    private int r_limitCount;
 
-    public ProductType getType() {
-        return type;
-    }
+    public ProductType getType() { return type; }
 
     public MasterRc(int r_checkNumber, ProductType type, String r_name, int r_totalcalorie, int r_price, List<Product> r_products,double r_discount, int r_count)
     {
@@ -69,6 +60,8 @@ class MasterRc implements Serializable ,Impl_admin
     {
         this.r_products = r_products;
     }
+    public int getR_limitCount() { return r_limitCount; }
+    public void setR_limitCount(int r_limitCount) { this.r_limitCount = r_limitCount; }
 
     // MasterRc 객체 내의 재료의 총 칼로리 계산
     private int calculateTotalCalorie(List<Product> products)
@@ -94,7 +87,7 @@ class MasterRc implements Serializable ,Impl_admin
     }
 
     // MasterRc 객체 내의 재고 개수 계산
-    private int calculateMinCount(List<Product> products)
+    public int calculateMinCount(List<Product> products)
     {
         int minCount=10000;
         for (Product product : products)
@@ -291,6 +284,11 @@ class MasterRc implements Serializable ,Impl_admin
                     // MasterRc 객체 생성 및 리스트에 추가
                     MasterRc masterRc = new MasterRc(r_checkNumber, ProductType.RCMND, r_name, r_totalcalorie, r_price, selectedProducts, r_discount, r_count);
                     list2.add(masterRc);
+                    System.out.println("저장되었습니다.");
+                }
+                else{
+                    System.out.println("올바른 값을 입력하시오.");
+                    return;
                 }
             }
 //
@@ -336,6 +334,9 @@ class MasterRc implements Serializable ,Impl_admin
         List<MasterRc> existingList2 = CacheData.list2;
 //        ois1.close();
 //        fis1.close();
+        FileMg f = new FileMg();
+        CacheData.list2 = f.list2FileIn();
+        CacheData.list4 = f.list4FileIn();
 
         System.out.println();
         System.out.println("[[3.조합정보 변경]]========================================================================");
@@ -372,12 +373,9 @@ class MasterRc implements Serializable ,Impl_admin
                     int choice = Integer.parseInt(br.readLine());
                     if (choice == 0)
                     {
-//                        // 변경 완료 시, 변경된 정보를 저장
-//                        FileOutputStream fos1 = new FileOutputStream(f1);
-//                        ObjectOutputStream oos1 = new ObjectOutputStream(fos1);
-//                        oos1.writeObject(existingList2);
-//                        oos1.close();
-//                        fos1.close();
+                        f.list2FileOut();
+                        f.list4FileOut();
+                        System.out.println("수정되었습니다.");
                         break;
                     }
                     switch (choice)
@@ -427,6 +425,9 @@ class MasterRc implements Serializable ,Impl_admin
         List<MasterRc> existingList2 = CacheData.list2;
 //        ois1.close();
 //        fis1.close();
+        FileMg f = new FileMg();
+        CacheData.list2 = f.list2FileIn();
+        CacheData.list4 = f.list4FileIn();
 
         System.out.println();
         System.out.println("[[4.조합정보 삭제]]========================================================================");
@@ -463,6 +464,10 @@ class MasterRc implements Serializable ,Impl_admin
                     deleteIndex = i; // 삭제 대상 재료의 인덱스 설정
                     break;
                 }
+                else{
+                    System.out.println("올바른 값을 입력하시오.");
+                    break;
+                }
             }
         }
 
@@ -476,13 +481,10 @@ class MasterRc implements Serializable ,Impl_admin
         if (deleteIndex != -1)
         {
             existingList2.remove(deleteIndex);
+            System.out.println("삭제되었습니다.");
 
-            // 변경된 정보를 저장
-//            FileOutputStream fos1 = new FileOutputStream(f1);
-//            ObjectOutputStream oos1 = new ObjectOutputStream(fos1);
-//            oos1.writeObject(existingList2);
-//            oos1.close();
-//            fos1.close();
+            f.list2FileOut();
+            f.list4FileOut();
         }
 
         KioskMg.masterrcflag = false;
