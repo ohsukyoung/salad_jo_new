@@ -1,21 +1,18 @@
 import java.io.*;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import java.util.Iterator;
 import java.util.List;
 
 public class FileMg
 {
     // 역직렬화 : 파일 -> 객체 저장하기
-    public HashMap<String,Member> memberFileIn() throws IOException, ClassNotFoundException
+    public HashMap<String, Member> memberFileIn() throws IOException, ClassNotFoundException
     {
-        HashMap<String,Member> h2 = new HashMap<String,Member>();
+        HashMap<String, Member> h2 = new HashMap<String, Member>();
         try
         {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream("data/member.ser"));
-            h2 = (HashMap<String,Member>) ois.readObject();
+            h2 = (HashMap<String, Member>) ois.readObject();
             ois.close();
             return h2;
         }
@@ -113,7 +110,7 @@ public class FileMg
         {
             f0.getParentFile().mkdirs();
         }
-        HashMap<String,Member> h1 = MemberMg.hm;
+        HashMap<String, Member> h1 = MemberMg.hm;
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f0));
 
         // 생성된 스트림에 내보낼 객체를 기록

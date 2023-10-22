@@ -1,7 +1,5 @@
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 
 /*
  키오스크 ----------------------------------------------------------------
@@ -41,13 +39,12 @@ class Kiosk {
     }
 
     public void storePack() {
-        List<Order> OrderList = CacheData.orderOuterList;
         String payMe = null;
         System.out.println("\n\t[ 포장/매장 선택 ]=============");
         System.out.println("\t1. 포장");
         System.out.println("\t2. 매장");
         System.out.println("\t==============================");
-        SelectMenuAdmin selectMenu = new SelectMenuAdmin();
+        SelectMenu selectMenu = new SelectMenu();
         int listSize = 2;
         int adminNum = -1;
         int userSelect = selectMenu.menuSelect(listSize,adminNum);
@@ -55,6 +52,9 @@ class Kiosk {
         if(userSelect==1)
         {
             storeflag = false;
+        }
+        else {
+            storeflag = true;
         }
 
         if(userSelect == adminNum){
@@ -130,13 +130,17 @@ class Kiosk {
 
     public void menuMySalad() {
         System.out.println("\n\t[ 2. 나만의 샐러드 ]");
-        OrderValues orderValues;
+
+        System.out.println("\t[ 베이스 ■ ■ ■ ■ ]");
         info.printInfo(ProductType.S_BASE);
 
+        System.out.println("\t[ ■ 메인토핑 ■ ■ ■ ]");
         info.printInfo(ProductType.S_MAIN);
 
+        System.out.println("\t[ ■ ■ 사이드토핑 ■ ■ ]");
         info.printInfo(ProductType.S_SIDE);
 
+        System.out.println("\t[ ■ ■ ■ 소스 ■ ]");
         info.printInfo(ProductType.S_SOURCE);
     }
 

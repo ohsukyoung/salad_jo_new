@@ -1,15 +1,11 @@
-import java.io.BufferedReader;
-import java.util.Iterator;
 import java.util.List;
 
 /*
  안내 ----------------------------------------------------------------
 */
-interface Imp_info {
-    void printInfo(ProductType productType);
-}
 
-class InfoService implements Imp_info {
+
+public class InfoService implements Imp_info {
     private PdInterface pdInterface;
 
     // 생성자를 사용하여 productService 초기화
@@ -31,7 +27,7 @@ class InfoService implements Imp_info {
             selectContinue.menuSelectProduct(productList);
         }else {
             // 리스트 출력
-            List<MasterRc> masterList = CacheData.list4;
+            List<MasterRc> masterList = CacheData.list2;
             printInfoHeader(productType);
             printInfoBodyMaster(productType, masterList);
 
@@ -43,12 +39,12 @@ class InfoService implements Imp_info {
 
     // 출력 리스트 header
     public void printInfoHeader(ProductType productType) {
-        System.out.println("\t-----------------------------------------------------------------------------");
+        System.out.println("\t---------------------------------------------------------------------------------------------------------------------");
         if(productType != ProductType.RCMND)    // 사장추천이 아닐 경우
             System.out.printf("\t%-4s| %-8s|\t%-8s|\t%-8s|\t%-8s\t|\t%-8s\n", "번호", "상품명", "단위", "칼로리", "가격", "남은수량");
         else
             System.out.printf("\t%-4s| %-8s|\t%-8s|\t%-8s\t|\t%-8s|\t%-8s\n", "번호", "상품명", "칼로리", "가격", "남은수량", "상세재료");
-        System.out.println("\t-----------------------------------------------------------------------------");
+        System.out.println("\t---------------------------------------------------------------------------------------------------------------------");
     }
 
     // 출력 리스트 body>Mast
@@ -63,7 +59,7 @@ class InfoService implements Imp_info {
             }
             System.out.println();
         }
-        System.out.println("\t-----------------------------------------------------------------------------");
+        System.out.println("\t---------------------------------------------------------------------------------------------------------------------");
     }
 
     // 출력 리스트 body>Product
@@ -77,9 +73,9 @@ class InfoService implements Imp_info {
                 }
 
                 System.out.printf("\t%-4d   %-8s \t%-8s \t%-8s\t \t%-8d \t%-8d\n",
-                    index++, product.getP_name(), product.getP_unit(), product.getP_calorie(), product.getP_price(), product.getP_limitCount());
+                        index++, product.getP_name(), product.getP_unit(), product.getP_calorie(), product.getP_price(), product.getP_limitCount());
             }
-            System.out.println("\t-----------------------------------------------------------------------------");
+            System.out.println("\t---------------------------------------------------------------------------------------------------------------------");
         }
     } // end: printInfoBodyProduct
 }

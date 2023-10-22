@@ -20,19 +20,20 @@ public class ad_login {
 //
 //        CacheData cacheData = new CacheData();
 //        cacheData.testData();
-        
+
         System.out.println();
         System.out.println("\t관리자 로그인을 시작합니다.");
 
         while(true)
         {
 
-            System.out.println("\n\t============================");
+            System.out.println("\n\t===============================");
             System.out.print("\t▶ 관리자 ID 입력 : ");
             adId = br.readLine();
             System.out.print("\t▶ 관리자 비밀번호 입력 : ");
             adPw = br.readLine();
-            System.out.println("\t============================");
+            System.out.println("\t===============================");
+            System.out.println();
 
             if (adId.equals("admin") && adPw.equals("1234"))
             {

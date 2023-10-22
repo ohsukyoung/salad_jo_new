@@ -1,10 +1,10 @@
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class KioskMg
 {
-    public static final int E_STOCKMG =1; // 재고관리
+    public static final int E_STOCKMG =1; // 판매관리
     public static final int E_INGMG = 2; // 재료 관리
     public static final int E_RECMG = 3; // 사장추천 관리
     public static final int E_SALESMG = 4; // 매출 관리
@@ -62,8 +62,8 @@ public class KioskMg
 
     public static void adMenuDisp()
     {
-        System.out.println("\n\t[ 키오스크 관리 메뉴 선택 ]===========");
-        System.out.println("\t1. 재고 관리");
+        System.out.println("\n\t[ 키오스크 관리 메뉴 선택 ]=============");
+        System.out.println("\t1. 판매 관리");
         System.out.println("\t2. 재료 관리");
         System.out.println("\t3. 사장추천 관리");
         System.out.println("\t4. 매출 관리");
@@ -93,16 +93,19 @@ public class KioskMg
 
         // 클래스를 활용하여 처리
         if (sel==E_STOCKMG){
-            // 1. 재고 관리
+            // 1. 판매 관리
             FoodAdmin foodadmin = new FoodAdmin();
             foodadminflag = true;
-            System.out.println("\n\t[재고관리]==============");
-            System.out.printf("\t1.판매 정보 출력\n\t2.판매항목 세팅\n\t3.판매항목 제거\n");
+            System.out.println("\n\t[ 판매관리 ]===============");
+            System.out.printf("\t1. 판매정보 출력\n\t2. 판매항목 세팅\n\t3. 판매항목 제거\n");
             System.out.println("\t=========================");
-            System.out.print("\t▶ 메뉴선택(1~3) : ");
-            check = Integer.parseInt(br.readLine());
             while(foodadminflag) {
-
+                try {
+                    System.out.print("\t▶ 메뉴선택(1~3) : ");
+                    check = Integer.parseInt(br.readLine());
+                }
+                catch (NumberFormatException e){
+                }
                 switch (check){
                     case 1:
                         foodadmin.setting_print();
@@ -127,10 +130,14 @@ public class KioskMg
             Product product = new Product();
             productflag = true;
             System.out.println("\n\t[ 재료관리 ]==============");
-            System.out.printf("\t1.재료출력\n\t2.신규재료 등록\n\t3.재료정보 변경\n\t4.재료 정보 삭제\n");
+            System.out.printf("\t1. 재료출력\n\t2. 신규재료 등록\n\t3. 재료정보 변경\n\t4. 재료정보 삭제\n");
             System.out.println("\t=========================");
-            System.out.print("\t▶ 메뉴선택(1~4) : ");
-            check = Integer.parseInt(br.readLine());
+            try {
+                System.out.print("\t▶ 메뉴선택(1~4) : ");
+                check = Integer.parseInt(br.readLine());
+            }
+            catch (NumberFormatException e){
+            }
 
             while(productflag) {
 
@@ -140,13 +147,13 @@ public class KioskMg
                         return;
                     case 2 :
                         product.ad_add();
-                        break;
+                        return;
                     case 3 :
                         product.ad_modify();
-                        break;
+                        return;
                     case 4 :
                         product.ad_delete();
-                        break;
+                        return;
                     default:
                         System.out.println("\t[!] 입력된 숫자가 옳지 않습니다.");
                         break;
@@ -157,10 +164,14 @@ public class KioskMg
             MasterRc masterRc = new MasterRc();
             masterrcflag = true;
             System.out.println("\n\t[사장추천 관리]==============");
-            System.out.printf("\n\t1.추천조합 출력\n\t2.추천조합 등록\n\t3.추천조합 정보 변경\n\t4.추천조합 정보 삭제\n");
+            System.out.printf("\t1.추천조합 출력\n\t2.추천조합 등록\n\t3.추천조합 정보 변경\n\t4.추천조합 정보 삭제\n");
             System.out.println("\t=========================");
-            System.out.print("\t▶ 메뉴선택(1~4) : ");
-            check = Integer.parseInt(br.readLine());
+            try {
+                System.out.print("\t▶ 메뉴선택(1~4) : ");
+                check = Integer.parseInt(br.readLine());
+            }
+            catch (NumberFormatException e){
+            }
 
             while(masterrcflag) {
 
@@ -168,16 +179,16 @@ public class KioskMg
                 {
                     case 1 :
                         masterRc.ad_print();
-                        break;
+                        return;
                     case 2 :
                         masterRc.ad_add();
-                        break;
+                        return;
                     case 3 :
                         masterRc.ad_modify();
-                        break;
+                        return;
                     case 4 :
                         masterRc.ad_delete();
-                        break;
+                        return;
                     default :
                         System.out.println("\t[!] 입력된 숫자가 옳지 않습니다.");
                         break;
@@ -209,7 +220,6 @@ public class KioskMg
 //            try {
 //                f.memberFileOut();
 //                f.receiptFileOut();
-//                //f.orderOuterFileOut();//TODO 문제 없는지 확인 필요
 //
 //            } catch (IOException e) {
 //                System.out.println("e.toString: " + e.toString());

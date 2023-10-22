@@ -1,5 +1,7 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 class Menus
 {
@@ -27,8 +29,8 @@ public class SalesMg
         System.out.println("\t1. 결제 취소");
         System.out.println("\t2. 영수증 출력");
         System.out.println("\t3. 매출 조회");
-        System.out.println("\t4. 종료");
-        System.out.println("\t===============================");
+        System.out.println("\t4. 관리자 메뉴 화면으로 이동");
+        System.out.println("\t=================================");
         System.out.print("\t▶ 메뉴 선택 : ");
    }
 
@@ -69,7 +71,6 @@ public class SalesMg
 
     public static void cancelPayment() throws IOException
     {
-        System.out.println();
         System.out.println("\n\t[ 결제 취소 ]====================");
         System.out.print("\t▶ 년 입력: ");
         int cancelYear = Integer.parseInt(br.readLine());
@@ -83,6 +84,10 @@ public class SalesMg
 
         int receiptIndex = 1;
 
+        System.out.println("\n\t[ 결재취소 리스트 ]");
+        System.out.println("\t===========================================================================");
+        System.out.printf("\t%-5s \t%5s \t%10s \t%5s \t%5s \t%5s\n","구분번호","회원여부","아이디","포인트사용","결제수단","결재금액");
+        System.out.println("\t===========================================================================");
         for (Receipt receipt : receipts)
         {
             // TODO 출력방식 고민
@@ -97,32 +102,28 @@ public class SalesMg
 //            포인트 사용: 0
 //            결제 수단: 카카오페이
 //            결제 금액: 400.0
-//
-//            구분번호: 2
-//            회원 여부: 회원
-//            회원 아이디 : 01012341234
-//            포인트 사용: 0
-//            결제 수단: 카카오페이
-//            결제 금액: 800.0
-//
-//            구분번호: 3
-//            회원 여부: 회원
-//            회원 아이디 : 01012341234
-//            포인트 사용: 0
-//            결제 수단: 카카오페이
-//            결제 금액: 400.0
             if (receipt.getYear() == cancelYear && receipt.getMonth() == cancelMonth && receipt.getDay() == cancelDay)
             {
-                System.out.println("구분번호: " + receiptIndex);
-                System.out.println("회원 여부: " + (receipt.isMember() ? "회원" : "비회원"));
+                String isMemberId = "";
                 if (receipt.isMember())
-                    System.out.println("회원 아이디 : " + receipt.getMemberId());
+                    isMemberId = receipt.getMemberId();
                 else
-                    System.out.println("회원이 아닙니다");
-                System.out.println("포인트 사용: " + receipt.getUsedPoints());
-                System.out.println("결제 수단: " + receipt.getPaymentMethod());
-                System.out.println("결제 금액: " + receipt.getTotalAmount());
-                System.out.println();
+                    isMemberId = "아이디없음";
+
+                System.out.printf("\t%-5d \t%5s \t%16s \t%5s \t%5s \t%5.1f\n",
+                        receiptIndex,(receipt.isMember() ? "회원" : "비회원"),isMemberId,receipt.getUsedPoints(),receipt.getPaymentMethod(),receipt.getTotalAmount());
+                //System.out.printf("\t%8s %8s %16s %8s %10s %16s","구분번호","회원여부","아이디","포인트사용","결제수단","결재금액");
+
+//                System.out.println("구분번호: " + receiptIndex);
+//                System.out.println("회원 여부: " + (receipt.isMember() ? "회원" : "비회원"));
+//                if (receipt.isMember())
+//                    System.out.println("회원 아이디 : " + receipt.getMemberId());
+//                else
+//                    System.out.println("회원이 아닙니다");
+//                System.out.println("포인트 사용: " + receipt.getUsedPoints());
+//                System.out.println("결제 수단: " + receipt.getPaymentMethod());
+//                System.out.println("결제 금액: " + receipt.getTotalAmount());
+//                System.out.println();
                 foundReceipt  = true;
                 receiptIndex++;
             }
@@ -133,6 +134,7 @@ public class SalesMg
 
         if (foundReceipt)
         {
+
             System.out.print("\t▶ 결제 취소할 구분 번호를 입력하세요: ");
             int selectedReceiptIndex = Integer.parseInt(br.readLine());
 
@@ -159,11 +161,12 @@ public class SalesMg
                 if (selectedReceipt != null)
                 {
                     int returnedPoints = selectedReceipt.getUsedPoints();
+                    int remainingPoints = (int)(selectedReceipt.getTotalAmount() - selectedReceipt.getUsedPoints());
 
                     if (selectedReceipt.isMember()==true)
                     {
                         String id = selectedReceipt.getMemberId();
-                        int memPoint = MemberMg.hm.get(id).getMemPoint()+returnedPoints;
+                        int memPoint = MemberMg.hm.get(id).getMemPoint()+returnedPoints-(int)(remainingPoints*0.1);
                         MemberMg.hm.get(id).setMemPoint(memPoint);
                     }
 
@@ -171,19 +174,34 @@ public class SalesMg
                     // 선택된 결제 내역을 삭제
                     receipts.remove(selectedReceipt);
 
-                    System.out.println();
-                    System.out.println("\t[결제 취소 내역]-------------------------");
-                    System.out.println("\t- 구분번호: " + selectedReceiptIndex);
-                    System.out.println("\t- 회원 여부: " + (selectedReceipt.isMember() ? "회원" : "비회원"));
+                    System.out.println("\n\t[ 결제 취소 내역 ]");
+                    System.out.println("\t==========================================================================================");
+                    System.out.printf("\t%-5s \t%5s \t%10s \t%5s \t%5s \t%5s \t%5s\n","구분번호","회원여부","아이디","포인트사용","결제수단","결제금액","반환된 포인트");
+                    System.out.println("\t==========================================================================================");
+
+                    String isMemberId = "";
                     if (selectedReceipt.isMember())
-                        System.out.println("\t- 회원 아이디 : " + selectedReceipt.getMemberId());
+                        isMemberId = selectedReceipt.getMemberId();
                     else
-                        System.out.println("\t- 회원이 아닙니다");
-                    System.out.println("\t- 포인트 사용: " + selectedReceipt.getUsedPoints());
-                    System.out.println("\t- 결제 수단: " + selectedReceipt.getPaymentMethod());
-                    System.out.println("\t- 결제 금액: " + selectedReceipt.getTotalAmount());
-                    System.out.println("\t- 반환된 포인트: " + returnedPoints);
-                    System.out.println("\t---------------------------------------");
+                        isMemberId = "아이디없음";
+
+                    System.out.printf("\t%-5d \t%5s \t%16s \t%5d \t%5s \t%5.1f \t%5d\n",
+                            selectedReceiptIndex,(selectedReceipt.isMember() ? "회원" : "비회원"),isMemberId,selectedReceipt.getUsedPoints(),selectedReceipt.getPaymentMethod(),selectedReceipt.getTotalAmount(),returnedPoints);
+                    //System.out.printf("\t%8s %8s %16s %8s %10s %16s","구분번호","회원여부","아이디","포인트사용","결제수단","결제금액");
+
+//                    System.out.println("\t- 구분번호: " + selectedReceiptIndex);
+//                    System.out.println("\t- 회원 여부: " + (selectedReceipt.isMember() ? "회원" : "비회원"));
+//                    if (selectedReceipt.isMember())
+//                        System.out.println("\t- 회원 아이디 : " + selectedReceipt.getMemberId());
+//                    else
+//                        System.out.println("\t- 회원이 아닙니다");
+//                    System.out.println("\t- 포인트 사용: " + selectedReceipt.getUsedPoints());
+//                    System.out.println("\t- 결제 수단: " + selectedReceipt.getPaymentMethod());
+//                    System.out.println("\t- 결제 금액: " + selectedReceipt.getTotalAmount());
+//                    System.out.println("\t- 반환된 포인트: " + returnedPoints);
+//                    System.out.println("\t---------------------------------------");
+                    System.out.println("\t==========================================================================================");
+
                     System.out.println("\t「 결제가 취소되었습니다. 」");
 
 
@@ -195,7 +213,7 @@ public class SalesMg
         }
 
         else
-            System.out.println("「 해당 일자에 결제 내역이 없습니다. 」");
+            System.out.println("\t「 해당 일자에 결제 내역이 없습니다. 」");
         System.out.println();
     }
 
@@ -212,23 +230,35 @@ public class SalesMg
         int receiptDay = Integer.parseInt(br.readLine());
         System.out.print("\t▶ 시간대 입력 : ");
         int receiptHour = Integer.parseInt(br.readLine());
-        System.out.println("=================================");
+        System.out.println("\t=================================");
 
         int receiptIndex = 1;
 
         boolean foundReceipt = false;
 
         // 해당 일자의 영수증 내역 출력
+        System.out.println("\n\t[ 영수증 내역 출력 ]");
+        System.out.println("\t=============================================================================================");
+        System.out.printf("\t%-5s \t%5s \t%5s \t%5s \t%5s \t%5s\n","구분번호","회원여부","포인트사용","결제수단","결제금액", "실제 결제금액");
+        System.out.println("\t=============================================================================================");
+
         for (Receipt receipt : receipts)
         {
             if (receipt.getYear() == receiptYear && receipt.getMonth() == receiptMonth && receipt.getDay() == receiptDay && receipt.getHour() == receiptHour)
             {
-                System.out.println("구분번호: " + receiptIndex);
-                System.out.println("회원 여부: " + (receipt.isMember() ? "회원" : "비회원"));
-                System.out.println("포인트 사용: " + receipt.getUsedPoints());
-                System.out.println("결제 수단: " + receipt.getPaymentMethod());
-                System.out.println("결제 금액: " + receipt.getTotalAmount());
-                System.out.println();
+
+                System.out.printf("\t%-10d \t%5s \t%5d \t%14s \t%7.1f \t%7.1f\n",
+                        receiptIndex,(receipt.isMember() ? "회원" : "비회원"),receipt.getUsedPoints(),receipt.getPaymentMethod(),receipt.getTotalAmount(),(receipt.getTotalAmount()-receipt.getUsedPoints()));
+                //System.out.printf("\t%8s %8s %16s %8s %10s %16s","구분번호","회원여부","아이디","포인트사용","결제수단","결제금액");
+
+
+//                System.out.println("구분번호: " + receiptIndex);
+//                System.out.println("회원 여부: " + (receipt.isMember() ? "회원" : "비회원"));
+//                System.out.println("포인트 사용: " + receipt.getUsedPoints());
+//                System.out.println("결제 수단: " + receipt.getPaymentMethod());
+//                System.out.println("결제 금액: " + receipt.getTotalAmount());
+//                System.out.println("실제 결제 금액: " + (receipt.getTotalAmount()-receipt.getUsedPoints()));
+//                System.out.println();
                 receiptIndex++;
                 foundReceipt  = true;
             }
@@ -237,7 +267,7 @@ public class SalesMg
         // 사용자가 구분번호 입력하면 그 구분번호의 맞는 영수증 내역 출력
         if (foundReceipt)
         {
-            System.out.print("출력할 영수증의 구분번호를 입력하세요 : ");
+            System.out.print("\t▶ 출력할 영수증의 구분번호 입력 : ");
             int selectedReceiptIndex = Integer.parseInt(br.readLine());
             System.out.println();
 
@@ -249,33 +279,34 @@ public class SalesMg
                 {
                     if (receiptIndex == selectedReceiptIndex)
                     {
-                        System.out.println("--------------------------------------");
-                        System.out.println("구분번호: " + receiptIndex);
-                        System.out.println("회원 여부: " + (receipt.isMember() ? "회원" : "비회원"));
-                        System.out.println("포인트 사용: " + receipt.getUsedPoints());
-                        System.out.println("결제 수단: " + receipt.getPaymentMethod());
-                        System.out.println("결제 금액: " + receipt.getTotalAmount());
-                        System.out.println("영수증 출력이 완료 되었습니다~!!!");
-                        System.out.println("--------------------------------------");
-                        System.out.println();
+//                        System.out.println("--------------------------------------");
+//                        System.out.println("구분번호: " + receiptIndex);
+//                        System.out.println("회원 여부: " + (receipt.isMember() ? "회원" : "비회원"));
+//                        System.out.println("포인트 사용: " + receipt.getUsedPoints());
+//                        System.out.println("결제 수단: " + receipt.getPaymentMethod());
+//                        System.out.println("결제 금액: " + receipt.getTotalAmount());
+//                        System.out.println("실제 결제 금액: " + (receipt.getTotalAmount()-receipt.getUsedPoints()));
+//                        System.out.println("영수증 출력이 완료 되었습니다~!!!");
+//                        System.out.println("--------------------------------------");
+//                        System.out.println();
 
-                        System.out.println("\t┌───────────────────────────────────────────────┐");
-                        System.out.println("\t│                                               │");
-                        System.out.println("\t│\t[ 영수증 ] 샐러드먹조                          │");
-                        System.out.println("\t│\t--------------------------------------      │");
-                        System.out.printf("\t│\t%-8s \t%8s \t%8s         │\n","번호","회원여부","사용포인트");
-                        System.out.printf("\t│\t%-8d \t%8s \t%8d            │\n",receiptIndex,(receipt.isMember() ? "회원" : "비회원"),receipt.getUsedPoints());
-                        System.out.println("\t│\t--------------------------------------      │");
-                        System.out.printf("\t│\t%-16s \t%14s       │\n","결제수단",receipt.getPaymentMethod());
-                        System.out.printf("\t│\t%-16s \t%14.1f          │\n","결제금액",receipt.getTotalAmount());
+                        System.out.println("\t┌─────────────────────────────────────────────────────┐");
+                        System.out.println("\t│                                                     │");
+                        System.out.println("\t│  [ 영수증 ] 샐러드먹조                              │");
+                        System.out.println("\t│  ---------------------------------------------      │");
+                        System.out.printf("\t│  %-8s \t%8s \t%8s         │\n","번호","회원여부","사용포인트");
+                        System.out.printf("\t│  %-8d \t%8s \t%8d              │\n",receiptIndex,(receipt.isMember() ? "회원" : "비회원"),receipt.getUsedPoints());
+                        System.out.println("\t│  ---------------------------------------------      │");
+                        System.out.printf("\t│  %-16s \t%14s   │\n","결제수단",receipt.getPaymentMethod());
+                        System.out.printf("\t│  %-16s \t%14.1f        │\n","실제결제금액",receipt.getTotalAmount()-receipt.getUsedPoints());
 
 //                        System.out.printf("\t%-16s \t%14s\n","결제수단","결제금액");
 //                        System.out.printf("\t%-16s \t%14.1f\n",receipt.getPaymentMethod(),receipt.getTotalAmount());
-                        System.out.println("\t│\t--------------------------------------      │");
-                        System.out.println("\t│\t영수증 출력이 완료 되었습니다~!!!                │");
-                        System.out.println("\t│\t--------------------------------------      │");
-                        System.out.println("\t│                                               │");
-                        System.out.println("\t└───────────────────────────────────────────────┘");
+                        System.out.println("\t│  ---------------------------------------------      │");
+                        System.out.println("\t│  영수증 출력이 완료 되었습니다~!!!                  │");
+                        System.out.println("\t│  ---------------------------------------------      │");
+                        System.out.println("\t│                                                     │");
+                        System.out.println("\t└─────────────────────────────────────────────────────┘");
 
                         break;
                     }
@@ -294,17 +325,17 @@ public class SalesMg
     public static void salesCheck()throws IOException
     {
         System.out.println("\n\t[ 매출 조회 ]====================");
-        System.out.println("1. 년 매출 조회");
-        System.out.println("2. 월 매출 조회");
-        System.out.println("3. 일 매출 조회");
-        System.out.println("----------------------------------");
-        System.out.print("메뉴를 선택하세요: ");
+        System.out.println("\t1. 년 매출 조회");
+        System.out.println("\t2. 월 매출 조회");
+        System.out.println("\t3. 일 매출 조회");
+        System.out.println("\t================================");
+        System.out.print("\t▶ 메뉴를 선택하세요: ");
         int reportChoice = Integer.parseInt(br.readLine());
 
         switch (reportChoice)
         {
             case 1:
-                System.out.print("년 입력: ");
+                System.out.print("\t▶ 년 입력: ");
                 int salesYear = Integer.parseInt(br.readLine());
                 System.out.println();
                 double YearlySales = 0.0;
@@ -317,17 +348,17 @@ public class SalesMg
                         YearlySales += receipt.getTotalAmount();
                     }
                 }
-                System.out.printf("----------%d년 매출 조회-----------\n", salesYear);
-                System.out.println(salesYear + "년 매출 현황: " + YearlySales + "원");
-                System.out.println("년 매출 조회가 완료되었습니다.");
-                System.out.println("-------------------------------------");
+                System.out.printf("\t[ %d년 매출 조회 ]---------------------\n", salesYear);
+                System.out.println("\t- "+salesYear + "년 매출 현황: " + YearlySales + "원");
+                System.out.println("\t「 년 매출 조회가 완료되었습니다. 」");
+                System.out.println("\t-------------------------------------");
                 System.out.println();
                 break;
 
             case 2:
-                System.out.print("년 입력: ");
+                System.out.print("\t▶ 년 입력: ");
                 int monthlySalesYear = Integer.parseInt(br.readLine());
-                System.out.print("월 입력: ");
+                System.out.print("\t▶ 월 입력: ");
                 int monthlySalesMonth = Integer.parseInt(br.readLine());
                 System.out.println();
                 double MonthlySales = 0.0;
@@ -339,19 +370,19 @@ public class SalesMg
                         MonthlySales += receipt.getTotalAmount();
                     }
                 }
-                System.out.printf("----------%d년 %d월 매출 조회----------\n", monthlySalesYear, monthlySalesMonth);
-                System.out.println(monthlySalesYear + "년 " + monthlySalesMonth + "월 매출 현황: " + MonthlySales + "원");
-                System.out.println("월 매출 조회가 완료되었습니다.");
-                System.out.println("-----------------------------------------");
+                System.out.printf("\t[ %d년 %d월 매출 조회 ]-------------------\n", monthlySalesYear, monthlySalesMonth);
+                System.out.println("\t- "+monthlySalesYear + "년 " + monthlySalesMonth + "월 매출 현황: " + MonthlySales + "원");
+                System.out.println("\t「 월 매출 조회가 완료되었습니다. 」");
+                System.out.println("\t-----------------------------------------");
                 System.out.println();
                 break;
 
             case 3:
-                System.out.print("년 입력: ");
+                System.out.print("\t▶ 년 입력: ");
                 int dailySalesYear = Integer.parseInt(br.readLine());
-                System.out.print("월 입력: ");
+                System.out.print("\t▶ 월 입력: ");
                 int dailySalesMonth = Integer.parseInt(br.readLine());
-                System.out.print("일 입력: ");
+                System.out.print("\t▶ 일 입력: ");
                 int dailySalesDay = Integer.parseInt(br.readLine());
                 System.out.println();
                 double dailySales = 0.0;
@@ -364,9 +395,9 @@ public class SalesMg
                         dailySales += receipt.getTotalAmount();
                     }
                 }
-                System.out.printf("----------%d년 %d월 %d일 매출 조회-----------\n", dailySalesYear, dailySalesMonth, dailySalesDay);
-                System.out.println(dailySalesYear + "년 " + dailySalesMonth + "월 " + dailySalesDay + "일 매출 현황: " + dailySales + "원");
-                System.out.println("일 매출 조회가 완료되었습니다.");
+                System.out.printf("\t[ %d년 %d월 %d일 매출 조회 ]---------------------\n", dailySalesYear, dailySalesMonth, dailySalesDay);
+                System.out.println("\t- "+dailySalesYear + "년 " + dailySalesMonth + "월 " + dailySalesDay + "일 매출 현황: " + dailySales + "원");
+                System.out.println("\t「 일 매출 조회가 완료되었습니다. 」");
                 System.out.println("----------------------------------------------");
                 System.out.println();
                 break;
@@ -377,7 +408,7 @@ public class SalesMg
     public static void exit()
     {
         System.out.println();
-        System.out.println("\n\t관리자 메뉴로 돌아갑니다.");
+        System.out.println("\n\t「 관리자 메뉴로 돌아갑니다. 」");
         KioskMg.salesflag = false;
     }
 

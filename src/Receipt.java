@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.util.*;
 
 public class Receipt implements Serializable
 {
@@ -15,7 +14,6 @@ public class Receipt implements Serializable
     private double totalAmount;		// 총 결제 금액
     private boolean isCancelled;
     private String memberId;
-
 
 
 

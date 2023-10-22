@@ -42,7 +42,7 @@ public abstract class Super_Select implements Super_Select_Interface {
         return userSelect;
     }
 
-    public int menuSelectProduct(int listSize,int minNum,List<Product> productList,int menuUserSelect) {
+    public int menuSelectProduct(int listSize, int minNum, List<Product> productList, int menuUserSelect) {
         int userSelect = 0;
         br = new BufferedReader(new InputStreamReader(System.in));
         try {
@@ -71,7 +71,7 @@ public abstract class Super_Select implements Super_Select_Interface {
         return userSelect;
     }
 
-    public int menuSelectMasterRc(int listSize,int minNum,List<MasterRc> productList,int menuUserSelect) {
+    public int menuSelectMasterRc(int listSize, int minNum, List<MasterRc> productList, int menuUserSelect) {
         int userSelect = 0;
         br = new BufferedReader(new InputStreamReader(System.in));
         try {
@@ -241,36 +241,6 @@ class InsertSelectValue{
     }
 }
 
-// 메뉴 선택
-class SelectMenu extends Super_Select {
-    public SelectMenu() {
-        this.message    = "\t▶ 메뉴 선택: ";
-        this.errorMsg   = "\t[!] 메뉴 리스트 번호에서 벗어났습니다. 다시 입력해주세요.";
-//        this.minNum = 1;
-    }
-
-    @Override
-    public int menuSelect(int listSize,int minNum) {
-        super.minNum = minNum;
-        return super.menuSelect(listSize,minNum);
-    }
-}
-
-//TODO 중복 코드 줄이기(확인필요)
-class SelectMenuAdmin extends Super_Select {
-    public SelectMenuAdmin() {
-        this.message    = "\t▶ 메뉴 선택: ";
-        this.errorMsg   = "\t[!] 메뉴 리스트 번호에서 벗어났습니다. 다시 입력해주세요.";
-//        this.minNum = 1;
-    }
-
-    @Override
-    public int menuSelect(int listSize,int minNum) {
-        super.minNum = minNum;
-        return super.menuSelect(listSize,minNum);
-    }
-}
-
 // 개수 선택
 class SelectCount extends Super_Select {
     public SelectCount() {
@@ -285,12 +255,12 @@ class SelectCount extends Super_Select {
         return super.menuSelect(listSize,minNum);
     }
 
-    public int menuSelectProduct(int listSize,int minNum,List<Product> productList, int menuUserSelect) {
+    public int menuSelectProduct(int listSize, int minNum, List<Product> productList, int menuUserSelect) {
         super.minNum = minNum;
         return super.menuSelectProduct(listSize,minNum,productList,menuUserSelect);
     }
 
-    public int menuSelectMasterRc(int listSize,int minNum,List<MasterRc> productList, int menuUserSelect) {
+    public int menuSelectMasterRc(int listSize, int minNum, List<MasterRc> productList, int menuUserSelect) {
         super.minNum = minNum;
         return super.menuSelectMasterRc(listSize,minNum,productList,menuUserSelect);
     }

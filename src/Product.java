@@ -1,10 +1,10 @@
-import java.util.List;
-import java.util.StringTokenizer;
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
 
 enum ProductType {              // 제품 열거혐(Enum)
     /*
@@ -44,31 +44,6 @@ enum ProductType {              // 제품 열거혐(Enum)
 
     public String getName() {
         return name;
-    }
-}
-
-class ProductTypeChange {   // userSelect를 ProductType으로 변환
-    public ProductType ProductTypeChange(int userSelect) {
-        switch (userSelect) {
-            case 1:
-                return ProductType.RCMND;
-            case 2:
-                return ProductType.MY_SALAD;
-            case 3:
-                return ProductType.DRINK;
-            case 4:
-                return ProductType.SIDE;
-            case 5:
-                return ProductType.S_BASE;
-            case 6:
-                return ProductType.S_MAIN;
-            case 7:
-                return ProductType.S_SIDE;
-            case 8:
-                return ProductType.S_SOURCE;
-            default:
-                return null;
-        }
     }
 }
 
@@ -159,76 +134,106 @@ public class Product implements Serializable, Impl_admin {
 
     @Override
     public void ad_print() throws IOException, ClassNotFoundException {
-        // 역직렬화 기존 데이터 불러오기
-//        File f0 = new File(appDir, "\\data\\productData.ser");
-//        if (!f0.exists())
-//        {
-//            System.out.println("저장된 데이터가 없습니다.");
-//            return;
-//        }
-//
-//        FileInputStream fis = new FileInputStream(f0);
-//        ObjectInputStream ois = new ObjectInputStream(fis);
-//        List<Product> product = (List<Product>) ois.readObject();
+
         List<Product> product = CacheData.list1;
-//        ois.close();
-//        fis.close();
-
-        System.out.println("1.재료정보 출력");
-        System.out.println("1. 전체 재료정보 출력  2.선택 재료정보 출력");
 
 
+
+        System.out.println("\n\t[ 1. 재료정보 출력 ]===============");
+        System.out.println("\t1. 전체 재료정보 출력  \n\t2. 선택 재료정보 출력 ");
+        System.out.println("\t==============================");
+
+        int seletCheckNnumber=0;
+        int materialNumber=0;
         while (true)
         {
-            System.out.print("선택할 항목의 숫자를 입력하시오 : ");
-            int b = Integer.parseInt(br.readLine());
-            switch (b)
+            try{
+                System.out.print("\t▶ 선택할 항목의 숫자 입력 : ");
+                seletCheckNnumber = Integer.parseInt(br.readLine());
+            }
+            catch (NumberFormatException e)
+            {
+                System.out.println("\t[!] 잘못된 입력입니다. 다시 입력하세요.");
+                continue;
+            }
+
+            switch (seletCheckNnumber)
             {
                 case 1 :
-                    System.out.println("[[1.전체 재료정보 출력]]========================================================================");
-                    System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
+                    System.out.println("\n\t[ 1. 전체 재료정보 출력 ]");
+                    System.out.println("\t==========================================================================================================");
+                    System.out.printf("\t|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
                             "구분번호", "분류번호", "이름", "단위", "개수", "칼로리", "적정재고", "금액");
-                    System.out.println("===========================================================================================");
+                    System.out.println("\t==========================================================================================================");
 
                     // Iterator 활용하여 출력
-                    Iterator<Product> itList;
-                    itList = product.iterator();
+                    Iterator<Product> itList = product.iterator();
                     while (itList.hasNext())
                     {
                         Product itS = itList.next();
-                        System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n", itS.getP_checkNumber(),
+                        System.out.printf("\t|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n", itS.getP_checkNumber(),
                                 itS.getP_material(), itS.getP_name(), itS.getP_unit(), itS.getP_count(), itS.getP_calorie(),
                                 itS.getP_stock(), itS.getP_price());
                     }
+                    System.out.println("\t==========================================================================================================");
                     System.out.println();
                     return;
 
                 case 2 :
-                    System.out.println("[[2.선택 재료정보 출력]]========================================================================");
-                    System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
+                    System.out.println("\n\t[ 2. 선택 재료정보 출력 ]");
+                    System.out.println("\t==========================================================================================================");
+                    System.out.printf("\t|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
                             "구분번호", "분류번호", "이름", "단위", "개수", "칼로리", "적정재고", "금액");
-                    System.out.println("===========================================================================================");
-                    System.out.print("분류번호 입력 : ");
-                    int materialNumber = Integer.parseInt(br.readLine());
+                    System.out.println("\t==========================================================================================================");
+                    System.out.println("\t▷ [분류번호 안내] 1: 사장추천, 3:음료, 4:사이드, 5:베이스, 6:메인토핑, 7:사이드토핑, 8:소스");
+                    while (true) {
+                        try {
+                            System.out.print("\t▶ 분류번호 입력 : ");
+                            materialNumber = Integer.parseInt(br.readLine());
 
-                    // Iterator 활용하여 선택한 분류번호에 해당하는 재료 정보 출력
-                    Iterator<Product> itList1;
-                    itList1 = product.iterator();
+                            boolean found = false; // found 변수 초기화
+
+                            for (int i = 0; i < product.size(); i++) {
+                                if (materialNumber == product.get(i).getP_material()) {
+                                    found = true;
+                                    break; // 해당 분류번호를 찾았으므로 루프 종료
+                                }
+                            }
+
+                            if (found) {
+                                break; // 올바른 분류번호를 찾았으므로 루프 종료
+                            } else {
+                                System.out.println("\t▶ 구분번호가 존재하지 않습니다.");
+                            }
+                            break;
+                        }
+                        catch (NumberFormatException e)
+                        {
+                            System.out.println("\t[!] 잘못된 입력입니다. 다시 입력하세요.");
+                        }
+
+                    }
+
+
+                    // Iterator 활용하여 선택한 분류번호에 해당하는 재료정보 출력
+                    Iterator<Product> itList1 = product.iterator();
                     while (itList1.hasNext())
                     {
                         Product itS = itList1.next();
                         if (itS.getP_material() == materialNumber)
                         {
-                            System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n", itS.getP_checkNumber(),
+                            System.out.printf("\t|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n", itS.getP_checkNumber(),
                                     itS.getP_material(), itS.getP_name(), itS.getP_unit(), itS.getP_count(), itS.getP_calorie(),
                                     itS.getP_stock(), itS.getP_price());
                         }
                     }
+                    System.out.println("\t==========================================================================================================");
                     System.out.println();
                     return;
 
                 default:
-                    System.out.println("잘못된 입력입니다. 다시 입력하세요.");
+                    System.out.println("\t[!] 잘못된 입력입니다. 다시 입력하세요.");
+                    continue;
 
             }
 
@@ -241,25 +246,27 @@ public class Product implements Serializable, Impl_admin {
     public void ad_add() throws IOException,ClassNotFoundException {
 
         //자료구조 생성
-//        List<Product> list1 = new ArrayList<Product>();
         List<Product> list1 = CacheData.list1;
+
         boolean shouldExit = false;
-        System.out.println("[[2.신규재료 등록]]========================================================================");
-        System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
+        System.out.println("\n\t[ 2. 신규재료 등록 ]");
+        System.out.println("\t==========================================================================================================");
+        System.out.printf("\t|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
                 "구분번호", "분류번호", "이름", "단위", "개수", "칼로리", "적정재고", "금액");
-        System.out.println("===========================================================================================");
+        System.out.println("\t==========================================================================================================");
+        System.out.println("\t▷ [분류번호 안내] 1: 사장추천, 3:음료, 4:사이드, 5:베이스, 6:메인토핑, 7:사이드토핑, 8:소스");
 
-        // 무한루프를 활용
-//        while (!shouldExit) {
-            System.out.print("재료 정보를 입력하시오 (스페이스로 구분): ");
-            String input = br.readLine();
+        System.out.print("\t▶ 재료정보 입력 (스페이스로 구분): ");
+        String input = br.readLine();
 
-            // 토크나이저로 스페이스로 끊어주기
-            StringTokenizer tokenizer = new StringTokenizer(input, " ");
-            if (tokenizer.countTokens() != 8) {
-                System.out.println("입력한 항목의 갯수가 맞지 않습니다.");
-//                continue;
-            }
+        // 토크나이저로 스페이스로 끊어주기
+        StringTokenizer tokenizer = new StringTokenizer(input, " ");
+        if (tokenizer.countTokens() != 8) {
+            System.out.println("\t[!] 입력한 항목의 갯수가 맞지 않습니다.");
+            return;
+        }
+
+        try{
 
             int p_checkNumber = Integer.parseInt(tokenizer.nextToken());
             int p_material = Integer.parseInt(tokenizer.nextToken());
@@ -274,213 +281,218 @@ public class Product implements Serializable, Impl_admin {
             int p_stock = Integer.parseInt(tokenizer.nextToken());
             int p_price = Integer.parseInt(tokenizer.nextToken());
 
-
-
-            //역직렬화 데이터 불러오기
-//            File f0 = new File(appDir, "\\data\\productData.ser");
             List<Product> existingList;
-//            if (!f0.getParentFile().exists())
-//            {
-//                f0.getParentFile().mkdirs();
-//            }
-//
-//                if (f0.exists())
-//                {
-//                    // 파일이 이미 존재하면 기존 데이터를 읽어옵니다.
-//                    FileInputStream fis = new FileInputStream(f0);
-//                    ObjectInputStream ois = new ObjectInputStream(fis);
-//                    existingList = (List<Product>) ois.readObject();
-                    existingList = CacheData.list1;
-//                    ois.close();
-//                    fis.close();
-//                }
-//                else
-//                {
-//                    // 파일이 존재하지 않으면 새로운 리스트를 생성합니다.
-//                    existingList = new ArrayList<>();
-//                }
+            existingList = CacheData.list1;
 
-                //구분번호 중복 확인하기
-                boolean m = false;
-                for (int i = 0; i < existingList.size(); i++)
-                {
-                    if (p_checkNumber == existingList.get(i).getP_checkNumber())
-                    {
-                        m = true;
-                        break;
-                    }
+            boolean m = false;
+            for (int i = 0; i < existingList.size(); i++){
+                if (p_checkNumber == existingList.get(i).getP_checkNumber()){
+                    m = true;
+                    break;
                 }
-                if (m)
-                {
-                    System.out.println("이미 구분번호가 존재합니다.");
+            }
+            if (m){
+                System.out.println("\t[!] 이미 구분번호가 존재합니다.");
+                return;
+            }
+            else {
+                System.out.print("\t▶ 저장하시겠습니까?(Y/N) : ");
+                char x = br.readLine().charAt(0);
+                if (x == 'Y' || x == 'y') {
+                    Product product = new Product(p_checkNumber, productType, p_material, p_name, p_unit, p_count, p_calorie, p_stock, p_price);
+                    list1.add(product);
+                    FileMg f = new FileMg();
+                    f.list1FileOut();
+                    f.list3FileOut();
+
+                    System.out.println("\t「 저장되었습니다. 」");
+                } else {
+                    System.out.println("\t[!] 올바른 값을 입력하시오.");
                     return;
-                }else{
-                    System.out.print("저장하시겠습니까?(Y/N) : ");
-                    char x = br.readLine().charAt(0);
-                    if (x == 'Y' || x == 'y')
-                    {
-                        //prduct 인스턴스 생성하여 자료구조에 넣어주기
-    //            Product product = new Product(p_checkNumber, p_material, p_name, p_unit, p_count, p_calorie, p_stock, p_price);
-                        Product product = new Product(p_checkNumber, productType, p_material, p_name, p_unit, p_count, p_calorie, p_stock, p_price);
-                        list1.add(product);
-                        System.out.println("저장되었습니다.");
-//                        break;
-                    }
-                    else{
-                        System.out.println("올바른 값을 입력하시오.");
-                        return;
-                    }
-
-
-
                 }
-                KioskMg.productflag = false;
-//        }
-
-
+            }
+        }
+        catch (NumberFormatException e){
+            System.out.println("\t[!] 잘못된 숫자 형식입니다. 다시 입력하세요.");
+        }
+        KioskMg.productflag = false;
     }
+
+
 
     @Override
     public void ad_modify() throws IOException, ClassNotFoundException {
-//        File f0 = new File(appDir, "\\data\\productData.ser");
-//        if (!f0.exists())
-//        {
-//            System.out.println("저장된 데이터가 없습니다.");
-//            return;
-//        }
-//
-//        FileInputStream fis = new FileInputStream(f0);
-//        ObjectInputStream ois = new ObjectInputStream(fis);
-//        List<Product> product = (List<Product>) ois.readObject();
-
-//        ois.close();
-//        fis.close();
         List<Product> product = CacheData.list1;
-        FileMg f = new FileMg();
-        CacheData.list1 = f.list1FileIn();
-        CacheData.list3 = f.list3FileIn();
+        List<Product> list3 = CacheData.list3;
 
+        System.out.println("\n\t[ 3. 재료정보 변경 ]");
+        System.out.print("\t▶ 작업할 대상의 구분번호 입력: ");
+        int pointNumber;
 
-
-        System.out.println("[[3.재료정보 변경]]========================================================================");
-        System.out.print("작업할 대상의 구분번호를 입력하시오 : ");
-        int pointNumber = Integer.parseInt(br.readLine());
+        try {
+            pointNumber = Integer.parseInt(br.readLine());
+        } catch (NumberFormatException e) {
+            System.out.println("\t[!] 올바른 구분번호를 입력하세요.");
+            return;
+        }
 
         boolean found = false;
 
         for (int i = 0; i < product.size(); i++) {
             if (pointNumber == product.get(i).getP_checkNumber()) {
                 found = true;
-                Iterator<Product> itList;
-                itList = product.iterator();
                 Product itS = product.get(i);
 
-                System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
+                System.out.println("\t==========================================================================================================");
+                System.out.printf("\t|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
+                        "구분번호", "분류번호", "이름", "단위", "개수", "칼로리", "적정재고", "금액");
+                System.out.println("\t==========================================================================================================");
+                System.out.printf("\t|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
                         itS.getP_checkNumber(), itS.getP_material(), itS.getP_name(),
                         itS.getP_unit(), itS.getP_count(), itS.getP_calorie(),
                         itS.getP_stock(), itS.getP_price());
+                System.out.println("\t==========================================================================================================");
+
+                System.out.println("\n\t[ 변경할 내용 선택 ]-----------------------------------------------------");
+                System.out.println("\t1.구분번호 2. 분류번호 3. 이름 4. 단위 5. 개수 6. 칼로리 7. 적정재고 8. 금액");
+                System.out.println("\t----------------------------------------------------------------------");
                 System.out.println();
 
-                System.out.println();
-                System.out.println("변경할 내용을 선택하시오.");
-                System.out.println("1. 구분번호 2. 분류번호 3. 이름 4. 단위 5. 개수 6. 칼로리 7. 적정재고 8. 금액");
-                System.out.println();
                 while (true) {
-                    System.out.print("변경할 내용의 숫자를 입력하시오 (0: 변경 완료) : ");
-                    int a = Integer.parseInt(br.readLine());
-                    if (a == 0)
-                    {
+                    System.out.print("\t▶ 변경할 내용의 숫자 입력 (0: 변경 완료) : ");
+                    int choice;
+
+                    try {
+                        choice = Integer.parseInt(br.readLine());
+                    } catch (NumberFormatException e) {
+                        System.out.println("\t[!] 올바른 선택을 입력하세요.");
+                        return;
+                    }
+
+                    if (choice == 0) {
                         // 변경 완료 시, 변경된 정보를 저장
-//                        FileOutputStream fos = new FileOutputStream(f0);
-//                        ObjectOutputStream oos = new ObjectOutputStream(fos);
-//                        oos.writeObject(product);
-//                        oos.close();
-//                        fos.close();
-                        System.out.println("수정되었습니다.");
+                        FileMg f = new FileMg();
                         f.list1FileOut();
                         f.list3FileOut();
-                        break;
-                    }
-                    switch (a) {
-                        case 1:
-                            System.out.print("새로운 구분번호 입력: ");
-                            int newCheckNumber = Integer.parseInt(br.readLine());
-                            product.get(i).setP_checkNumber(newCheckNumber);
-                            break;
-                        case 2:
-                            System.out.print("새로운 분류번호 입력: ");
-                            int newMaterial = Integer.parseInt(br.readLine());
-                            product.get(i).setP_material(newMaterial);
-                            break;
-                        case 3:
-                            System.out.print("새로운 이름 입력: ");
-                            String newName = br.readLine();
-                            product.get(i).setP_name(newName);
-                            break;
-                        case 4:
-                            System.out.print("새로운 단위 입력: ");
-                            String newUnit = br.readLine();
-                            product.get(i).setP_unit(newUnit);
-                            break;
-                        case 5:
-                            System.out.print("새로운 개수 입력: ");
-                            int newCount = Integer.parseInt(br.readLine());
-                            product.get(i).setP_count(newCount);
-                            break;
-                        case 6:
-                            System.out.print("새로운 칼로리 입력: ");
-                            int newCalorie = Integer.parseInt(br.readLine());
-                            product.get(i).setP_calorie(newCalorie);
-                            break;
-                        case 7:
-                            System.out.print("새로운 적정재고 입력: ");
-                            int newStock = Integer.parseInt(br.readLine());
-                            product.get(i).setP_stock(newStock);
-                            break;
-                        case 8:
-                            System.out.print("새로운 금액 입력: ");
-                            int newPrice = Integer.parseInt(br.readLine());
-                            product.get(i).setP_price(newPrice);
-                            break;
-                        default:
-                            System.out.println("입력된 항목이 없습니다.");
+                        System.out.println("\t「 수정되었습니다. 」");
+                        return; // 메소드를 빠져나갑니다.
+                    } else if (choice < 1 || choice > 8) {
+                        System.out.println("\t[!] 잘못된 선택입니다. 다시 선택하세요.");
+                    } else {
+                        System.out.print("\t▶ 새로운 값 입력 : ");
+                        String newValue = br.readLine();
+                        try {
+                            switch (choice) {
+                                case 1:
+                                    int newCheckNumber = Integer.parseInt(newValue);
+                                    itS.setP_checkNumber(newCheckNumber);
+                                    for (Product p : list3) {
+                                        if (p.getP_checkNumber() == pointNumber) {
+                                            p.setP_checkNumber(newCheckNumber);
+                                        }
+                                    }
+                                    break;
+                                case 2:
+                                    int newMaterial = Integer.parseInt(newValue);
+                                    itS.setP_material(newMaterial);
+                                    for (Product p : list3) {
+                                        if (p.getP_checkNumber() == pointNumber) {
+                                            p.setP_material(newMaterial);
+                                        }
+                                    }
+                                    break;
+                                case 3:
+                                    itS.setP_name(newValue);
+                                    for (Product p : list3) {
+                                        if (p.getP_checkNumber() == pointNumber) {
+                                            p.setP_name(newValue);
+                                        }
+                                    }
+                                    break;
+                                case 4:
+                                    itS.setP_unit(newValue);
+                                    for (Product p : list3) {
+                                        if (p.getP_checkNumber() == pointNumber) {
+                                            p.setP_unit(newValue);
+                                        }
+                                    }
+                                    break;
+                                case 5:
+                                    int newCount = Integer.parseInt(newValue);
+                                    itS.setP_count(newCount);
+                                    for (Product p : list3) {
+                                        if (p.getP_checkNumber() == pointNumber) {
+                                            p.setP_count(newCount);
+                                        }
+                                    }
+                                    break;
+                                case 6:
+                                    int newCalorie = Integer.parseInt(newValue);
+                                    itS.setP_calorie(newCalorie);
+                                    for (Product p : list3) {
+                                        if (p.getP_checkNumber() == pointNumber) {
+                                            p.setP_calorie(newCalorie);
+                                        }
+                                    }
+                                    break;
+                                case 7:
+                                    int newStock = Integer.parseInt(newValue);
+                                    itS.setP_stock(newStock);
+                                    for (Product p : list3) {
+                                        if (p.getP_checkNumber() == pointNumber) {
+                                            p.setP_stock(newStock);
+                                        }
+                                    }
+                                    break;
+                                case 8:
+                                    int newPrice = Integer.parseInt(newValue);
+                                    itS.setP_price(newPrice);
+                                    for (Product p : list3) {
+                                        if (p.getP_checkNumber() == pointNumber) {
+                                            p.setP_price(newPrice);
+                                        }
+                                    }
+                                    break;
+
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("\t[!] 올바른 값을 입력하세요.");
+                        }
                     }
                 }
             }
         }
+
         if (!found) {
-            System.out.println("구분번호가 일치하지 않습니다.");
+            System.out.println("\t[!] 구분번호가 일치하지 않습니다.");
         }
 
         KioskMg.productflag = false;
-
     }
+
 
 
     @Override
     public void ad_delete() throws IOException, ClassNotFoundException {
-        // 역직렬화 기존 데이터 불러오기
-//        File f0 = new File(appDir, "\\data\\productData.ser");
-//        if (!f0.exists())
-//        {
-//            System.out.println("저장된 데이터가 없습니다.");
-//            return;
-//        }
-//        FileInputStream fis = new FileInputStream(f0);
-//        ObjectInputStream ois = new ObjectInputStream(fis);
-//        List<Product> product = (List<Product>)ois.readObject();
-
-//        ois.close();
-//        fis.close();
         List<Product> product = CacheData.list1;
-        FileMg f = new FileMg();
-        CacheData.list1 = f.list1FileIn();
-        CacheData.list3 = f.list3FileIn();
+        List<Product> list3 = CacheData.list3;
+
+        System.out.println("\n\t[ 4. 재료정보 삭제 ]");
+        System.out.print("\t▶ 작업할 대상의 구분번호 입력 (뒤로가기:0) : ");
+        int pointNumber;
 
 
-        System.out.println("[[4.재료정보 삭제]]========================================================================");
-        System.out.print("작업할 대상의 구분번호를 입력하시오 : ");
-        int pointNumber = Integer.parseInt(br.readLine());
+        try {
+            pointNumber = Integer.parseInt(br.readLine());
+            if(pointNumber==0)
+            {
+                return;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("\t[!] 올바른 구분번호를 입력하세요.");
+            return;
+        }
+
         boolean found = false;
 
         int deleteIndex = -1; // 삭제할 아이템의 인덱스 초기화
@@ -492,48 +504,54 @@ public class Product implements Serializable, Impl_admin {
                 itList = product.iterator();
                 Product itS = product.get(i);
 
-                System.out.printf("|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
+                System.out.println("\t==========================================================================================================");
+                System.out.printf("\t|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
+                        "구분번호", "분류번호", "이름", "단위", "개수", "칼로리", "적정재고", "금액");
+                System.out.println("\t==========================================================================================================");
+                System.out.printf("\t|| %5s || %5s || %5s || %9s || %5s || %5s || %5s || %5s ||\n",
                         itS.getP_checkNumber(), itS.getP_material(), itS.getP_name(),
                         itS.getP_unit(), itS.getP_count(), itS.getP_calorie(),
                         itS.getP_stock(), itS.getP_price());
+                System.out.println("\t==========================================================================================================");
                 System.out.println();
                 System.out.println();
-
-                System.out.print("삭제하시겠습니까?(Y/N) : ");
+                System.out.print("\t▶ 삭제하시겠습니까? (Y/N) : ");
                 char x = br.readLine().charAt(0);
+
                 if (x == 'Y' || x == 'y') {
-                    deleteIndex = i; // 삭제 대상 재료의 인덱스 설정
-                    f.list1FileOut();
-                    f.list3FileOut();
+                    deleteIndex = i; // 삭제 대상 제품의 인덱스 설정
+                    for (Iterator<Product> iterator = list3.iterator(); iterator.hasNext(); ) {
+                        Product p = iterator.next();
+                        if (p.getP_checkNumber() == pointNumber) {
+                            iterator.remove(); // list3에서 안전하게 제거
+                        }
+                    }
                     break;
-                }
-                else{
-                    System.out.println("올바른 값을 입력하시오.");
+                } else if (x == 'N' || x == 'n') {
+                    return; // 'N'을 입력하면 메소드를 빠져나옵니다.
+                } else {
+                    System.out.println("\t[!] 올바른 값을 입력하시오.");
                     return;
                 }
             }
         }
 
         if (!found) {
-            System.out.println("구분번호가 일치하지 않습니다.");
+            System.out.println("\t[!] 구분번호가 일치하지 않습니다.");
             return; // 일치하지 않으면 삭제 작업을 하지 않고 종료
         }
 
         // 삭제 대상 재료가 설정된 경우에만 삭제 수행
-        if (deleteIndex != -1)
-        {
+        if (deleteIndex != -1) {
             product.remove(deleteIndex);
-            System.out.println("삭제되었습니다.");
-//            // 변경된 정보를 저장
-//            FileOutputStream fos = new FileOutputStream(f0);
-//            ObjectOutputStream oos = new ObjectOutputStream(fos);
-//            oos.writeObject(product);
-//            oos.close();
-//            fos.close();
+
+            FileMg f = new FileMg();
+            f.list1FileOut();
+            f.list3FileOut();
+            System.out.println("\t「 삭제되었습니다. 」");
         }
 
         KioskMg.productflag = false;
-
-
     }
+
 }
